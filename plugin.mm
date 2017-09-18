@@ -1,6 +1,3 @@
-@import AppKit;
-#include <Cocoa/Cocoa.h>
-#include <Foundation/Foundation.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sqlite3.h>
@@ -111,6 +108,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
+    SetWallpaper(CurrentWallpaperPath, WallpaperMode);
     unlink(TempWallpaperPath);
 }
 
