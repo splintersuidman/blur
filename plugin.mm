@@ -94,7 +94,6 @@ PLUGIN_BOOL_FUNC(PluginInit)
     CreateCVar("wallpaper_tmp_file", (char *) "/tmp/chunkwm-tmp-blur.jpg");
 
     CurrentWallpaperPath = CVarStringValue("wallpaper");
-    // TODO(splintah): maybe change this to range instead of sigma?
     Sigma = CVarFloatingPointValue("wallpaper_blur");
     WallpaperMode = CVarStringValue("wallpaper_mode");
     TempWallpaperPath = CVarStringValue("wallpaper_tmp_file");
@@ -263,7 +262,7 @@ NumberOfWindowsOnSpace (void)
 
     for (NSDictionary *Window in Windows)
     {
-        /* NOTE(splintah): I think windows with a WindowLayer of 0 are windows
+        /* NOTE(splintah): I guess windows with a WindowLayer of 0 are windows
         we want to count */
         if ([(NSNumber *) Window[(__bridge NSString *) kCGWindowLayer] intValue] == 0)
         {

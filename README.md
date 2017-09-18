@@ -29,11 +29,12 @@ all spaces will have the same wallpaper.
 If this method does not work, you can try building it from source.
 
 ## How to build from source
-Required:
+### Required
 - xcode-8 command line tools,
 - imagemagick,
 - chunkwm
 
+### Build process
 - Install [chunkwm](https://github.com/koekeishiya/chunkwm).
 - Clone the chunkwm repo into your home directory.
 - Clone this repo into ~/chunkwm/src/plugins
