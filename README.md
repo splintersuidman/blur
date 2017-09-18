@@ -11,6 +11,7 @@ all spaces will have the same wallpaper.
 - [Settings](#settings)
 - [How to install](#how-to-install)
 - [How to build from source](#how-to-build-from-source)
+- [Changelog](#changelog)
 
 ## Settings
 `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
