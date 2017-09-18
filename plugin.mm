@@ -13,16 +13,15 @@
 #include "../../common/config/cvar.cpp"
 
 #include "blurwallpaper.h"
+#include "number-of-windows.m"
+#include "get-wallpaper.m"
+#include "set-wallpaper.m"
 
 #define internal static
 
 internal const char *PluginName = "blur";
 internal const char *PluginVersion = "0.1.0";
 internal chunkwm_api API;
-
-internal int SetWallpaper (const char *NormalCStringPathToFile, char *NormalCStringMode);
-internal char *GetPathToWallpaper (void);
-internal int NumberOfWindowsOnSpace (void);
 
 internal float Sigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
@@ -144,131 +143,3 @@ CHUNKWM_PLUGIN_SUBSCRIBE(Subscriptions)
 // NOTE(koekeishiya): Generate plugin
 CHUNKWM_PLUGIN(PluginName, PluginVersion);
 
-internal int
-SetWallpaper (const char *NormalCStringPathToFile, char *NormalCStringMode)
-{
-    // Convert the C types to the Objective-C types...
-    NSString *Mode = [NSString stringWithCString:NormalCStringMode encoding:[NSString defaultCStringEncoding]];
-    NSString *PathToFile = [NSString stringWithCString:NormalCStringPathToFile encoding:[NSString defaultCStringEncoding]];
-
-    NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
-    NSScreen *Screen = [NSScreen screens].firstObject;
-    NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen] mutableCopy];
-
-    if ([Mode isEqualToString: @"fill"])
-    {
-        [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
-        [Options setObject:[NSNumber numberWithBool:YES] forKey:NSWorkspaceDesktopImageAllowClippingKey];
-    }
-
-    if ([Mode isEqualToString: @"fit"])
-    {
-        [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
-        [Options setObject:[NSNumber numberWithBool:NO] forKey:NSWorkspaceDesktopImageAllowClippingKey];
-    }
-
-    if ([Mode isEqualToString: @"stretch"])
-    {
-        [Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently] forKey:NSWorkspaceDesktopImageScalingKey];
-        [Options setObject:[NSNumber numberWithBool:YES] forKey:NSWorkspaceDesktopImageAllowClippingKey];
-    }
-
-    if ([Mode isEqualToString: @"center"])
-    {
-        [Options setObject:[NSNumber numberWithInt:NSImageScaleNone] forKey:NSWorkspaceDesktopImageScalingKey];
-        [Options setObject:[NSNumber numberWithBool:NO] forKey:NSWorkspaceDesktopImageAllowClippingKey];
-    }
-
-    NSError *Error;
-
-    bool Success = [Workspace
-        setDesktopImageURL:[NSURL fileURLWithPath:PathToFile]
-        forScreen:Screen
-        options:Options
-        error:&Error];
-
-    if (!Success)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-internal char *
-GetPathToWallpaper (void)
-{
-    char *PathToFile = NULL;
-
-    NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
-    NSScreen *Screen = [NSScreen screens].firstObject;
-
-    NSString *Path = [Workspace desktopImageURLForScreen:Screen].path;
-    BOOL IsDir;
-    NSFileManager *FileManager = [NSFileManager defaultManager];
-
-    // check if file is a directory
-    [FileManager fileExistsAtPath:Path isDirectory:&IsDir];
-
-    // if directory, check db
-    if (IsDir)
-    {
-        NSArray *Dirs = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-        NSString *DatabasePath = [Dirs[0] stringByAppendingPathComponent:@"Dock/desktoppicture.db"];
-        sqlite3 *Database;
-
-        if (sqlite3_open(DatabasePath.UTF8String, &Database) == SQLITE_OK)
-        {
-            sqlite3_stmt *Statement;
-            const char *SQL = "SELECT * FROM data";
-
-            if (sqlite3_prepare_v2(Database, SQL, -1, &Statement, nil) == SQLITE_OK)
-            {
-                NSString *File;
-                while (sqlite3_step(Statement) == SQLITE_ROW)
-                {
-                    File = @((char *)sqlite3_column_text(Statement, 0));
-                }
-
-                // printf("%s/%s\n", Path.UTF8String, File.UTF8String);
-                PathToFile = (char *) malloc(
-                    sizeof(char) * strlen(Path.UTF8String) +
-                    sizeof(char) * strlen(File.UTF8String) +
-                    sizeof(char) * 1);
-                sprintf(PathToFile, "%s/%s", Path.UTF8String, File.UTF8String);
-                // printf("%s\n", PathToFile);
-                sqlite3_finalize(Statement);
-            }
-
-            sqlite3_close(Database);
-        }
-    }
-    else
-    {
-        PathToFile = (char *) malloc(sizeof(char) * strlen(Path.UTF8String));
-        sprintf(PathToFile, "%s", Path.UTF8String);
-        // printf("%s\n", PathToFile);
-    }
-    return PathToFile;
-}
-
-internal int
-NumberOfWindowsOnSpace (void)
-{
-    CFArrayRef windowListArray = CGWindowListCreate(kCGWindowListOptionOnScreenOnly|kCGWindowListExcludeDesktopElements, kCGNullWindowID);
-    NSArray *Windows = CFBridgingRelease(CGWindowListCreateDescriptionFromArray(windowListArray));
-
-    int NumberOfWindows = 0;
-
-    for (NSDictionary *Window in Windows)
-    {
-        /* NOTE(splintah): I guess windows with a WindowLayer of 0 are windows
-        we want to count */
-        if ([(NSNumber *) Window[(__bridge NSString *) kCGWindowLayer] intValue] == 0)
-        {
-            NumberOfWindows++;
-        }
-    }
-
-    return NumberOfWindows;
-}
