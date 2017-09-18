@@ -20,7 +20,7 @@ internal const char *PluginName = "blur";
 internal const char *PluginVersion = "0.1.0";
 internal chunkwm_api API;
 
-internal float Sigma = 0.0;
+internal float BlurSigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
 internal const char *TempWallpaperPath = NULL;
 internal char *WallpaperMode = NULL;
@@ -59,7 +59,6 @@ PLUGIN_MAIN_FUNC(PluginMain)
         StringsAreEqual(Node, "chunkwm_export_window_minimized"))
     {
         int NumberOfWindows = NumberOfWindowsOnSpace();
-        fprintf(stderr, "Number of windows: %d\n", NumberOfWindows);
         if (NumberOfWindows == 0)
         {
             SetWallpaper(CurrentWallpaperPath, WallpaperMode);
@@ -85,16 +84,17 @@ PLUGIN_BOOL_FUNC(PluginInit)
     API = ChunkwmAPI;
     BeginCVars(&API);
     CreateCVar("wallpaper", GetPathToWallpaper());
-    CreateCVar("wallpaper_blur", (float) 0.0);
+    CreateCVar("wallpaper_blur", BlurSigma);
     CreateCVar("wallpaper_mode", (char *) "fill");
     CreateCVar("wallpaper_tmp_file", (char *) "/tmp/chunkwm-tmp-blur.jpg");
 
     CurrentWallpaperPath = CVarStringValue("wallpaper");
-    Sigma = CVarFloatingPointValue("wallpaper_blur");
+    BlurSigma = CVarFloatingPointValue("wallpaper_blur");
     WallpaperMode = CVarStringValue("wallpaper_mode");
     TempWallpaperPath = CVarStringValue("wallpaper_tmp_file");
 
-    BlurWallpaper(CurrentWallpaperPath, TempWallpaperPath, (double) Sigma);
+    remove(TempWallpaperPath);
+    BlurWallpaper(CurrentWallpaperPath, TempWallpaperPath, (double) BlurSigma);
 
     // Set wallpaper
     int NumberOfWindows = NumberOfWindowsOnSpace();
@@ -109,7 +109,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
     SetWallpaper(CurrentWallpaperPath, WallpaperMode);
-    unlink(TempWallpaperPath);
+    remove(TempWallpaperPath);
 }
 
 // NOTE(koekeishiya): Enable to manually trigger ABI mismatch
