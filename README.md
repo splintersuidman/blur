@@ -23,7 +23,7 @@ all spaces will have the same wallpaper.
 - [Download the file](https://github.com/splintah/blur/releases)
 - Place it into your plugin directory
     - This is the directory specified in your `chunkwmrc` file after `chunkc core::plugin_dir`.
-    - It can be convenient to create a folder for your plugins in your home directory (e.g. `~/.chunkwm_plugins`).
+    - It may be convenient to create a folder for your plugins in your home directory (e.g. `~/.chunkwm_plugins`).
 - Load it in you `chunkwmrc` file: `chunkc core::load blur.so`.
 
 If this method does not work, you can try building it from source.
