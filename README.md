@@ -6,6 +6,8 @@ This is a plugin for [chunkwm](https://github.com/koekeishiya/chunkwm) that blur
 It currently does not support space-specific wallpapers;
 all spaces will have the same wallpaper.
 
+## Content
+- [Content](#content)
 - [Settings](#settings)
 - [How to install](#how-to-install)
 - [How to build from source](#how-to-build-from-source)
@@ -30,8 +32,8 @@ If this method does not work, you can try building it from source.
 
 ## How to build from source
 ### Required
-- xcode-8 command line tools,
-- imagemagick,
+- xcode-8 command line tools
+- imagemagick
 - chunkwm
 
 ### Build process
@@ -40,3 +42,5 @@ If this method does not work, you can try building it from source.
 - Clone this repo into ~/chunkwm/src/plugins
 - Run `make` in this folder (~/chunkwm/src/plugins)/
 
+## Changelog
+[CHANGELOG.md](https://github.com/splintah/blur/blob/master/CHANGELOG.md)
