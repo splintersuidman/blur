@@ -6,9 +6,9 @@ This is a plugin for [chunkwm](https://github.com/koekeishiya/chunkwm) that blur
 It currently does not support space-specific wallpapers;
 all spaces will have the same wallpaper.
 
-- [Settings](#Settings)
-- [How to install](#How-to-install)
-- [How to build from source](#How-to-build-from-source)
+- [Settings](#settings)
+- [How to install](#how-to-install)
+- [How to build from source](#how-to-build-from-source)
 
 ## Settings
 `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
@@ -20,7 +20,7 @@ all spaces will have the same wallpaper.
 `wallpaper_tmp_file` (string [path]): where to store the blurred wallpaper. Default: `/tmp/chunkwm-tmp-blur.jpg`.
 
 ## How to install
-- [Download the file]()
+- [Download the file](https://github.com/splintah/blur/releases)
 - Place it into your plugin directory
     - This is the directory specified in your `chunkwmrc` file after `chunkc core::plugin_dir`.
     - It can be convenient to create a folder for your plugins in your home directory (e.g. `~/.chunkwm_plugins`).
