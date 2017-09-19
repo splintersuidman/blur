@@ -1,6 +1,12 @@
+#ifndef APPLE_LIBS_INCLUDED
+#define APPLE_LIBS_INCLUDED
+
 @import AppKit;
 #include <Foundation/Foundation.h>
 #include <Cocoa/Cocoa.h>
+
+#endif
+#include <sqlite3.h>
 
 char * GetPathToWallpaper (void)
 {

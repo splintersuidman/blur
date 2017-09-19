@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <sqlite3.h>
 
 #include "../../api/plugin_api.h"
 #include "../../common/accessibility/application.h"
@@ -22,7 +21,7 @@ internal chunkwm_api API;
 
 internal float BlurSigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
-internal const char *TempWallpaperPath = NULL;
+internal char *TempWallpaperPath = NULL;
 internal char *WallpaperMode = NULL;
 
 inline bool
@@ -60,13 +59,9 @@ PLUGIN_MAIN_FUNC(PluginMain)
     {
         int NumberOfWindows = NumberOfWindowsOnSpace();
         if (NumberOfWindows == 0)
-        {
             SetWallpaper(CurrentWallpaperPath, WallpaperMode);
-        }
         else
-        {
             SetWallpaper(TempWallpaperPath, WallpaperMode);
-        }
 
         return true;
     }
@@ -96,7 +91,6 @@ PLUGIN_BOOL_FUNC(PluginInit)
     remove(TempWallpaperPath);
     BlurWallpaper(CurrentWallpaperPath, TempWallpaperPath, (double) BlurSigma);
 
-    // Set wallpaper
     int NumberOfWindows = NumberOfWindowsOnSpace();
     if (NumberOfWindows == 0)
         SetWallpaper(CurrentWallpaperPath, WallpaperMode);

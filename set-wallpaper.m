@@ -1,9 +1,18 @@
+#ifndef APPLE_LIBS_INCLUDED
+#define APPLE_LIBS_INCLUDED
+
 @import AppKit;
 #include <Foundation/Foundation.h>
 #include <Cocoa/Cocoa.h>
 
+#endif
+#include <unistd.h>
+
 int SetWallpaper (const char *NormalCStringPathToFile, char *NormalCStringMode)
 {
+    if (access(NormalCStringPathToFile, F_OK) == -1)
+        return 1;
+
     // Convert the C types to the Objective-C types...
     NSString *Mode = [NSString stringWithCString:NormalCStringMode encoding:[NSString defaultCStringEncoding]];
     NSString *PathToFile = [NSString stringWithCString:NormalCStringPathToFile encoding:[NSString defaultCStringEncoding]];
