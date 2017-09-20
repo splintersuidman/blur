@@ -57,8 +57,7 @@ RandomString(int Length)
  * */
 PLUGIN_MAIN_FUNC(PluginMain)
 {
-    if (StringsAreEqual(Node, "chunkwm_export_application_launched") ||
-        StringsAreEqual(Node, "chunkwm_export_application_activated") ||
+    if (StringsAreEqual(Node, "chunkwm_export_application_activated") ||
         StringsAreEqual(Node, "chunkwm_export_application_unhidden") ||
         StringsAreEqual(Node, "chunkwm_export_window_created") ||
         StringsAreEqual(Node, "chunkwm_export_window_deminimize"))
@@ -68,6 +67,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
         return true;
     }
     else if (
+        StringsAreEqual(Node, "chunkwm_export_application_launched") ||
         StringsAreEqual(Node, "chunkwm_export_application_terminated") ||
         StringsAreEqual(Node, "chunkwm_export_application_deactivated") ||
         StringsAreEqual(Node, "chunkwm_export_application_hidden") ||
