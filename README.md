@@ -40,8 +40,8 @@ If this method does not work, you can try building it from source.
 ### Build process
 - Install [chunkwm](https://github.com/koekeishiya/chunkwm).
 - Clone the chunkwm repo into your home directory.
-- Clone this repo into ~/chunkwm/src/plugins
-- Run `make` in this folder (~/chunkwm/src/plugins)/
+- Clone this repo into ~/chunkwm/src/plugins.
+- Run `make` in this folder (~/chunkwm/src/plugins).
 
 ## Changelog
 [CHANGELOG.md](https://github.com/splintah/blur/blob/master/CHANGELOG.md)
