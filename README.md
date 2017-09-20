@@ -29,8 +29,6 @@ all spaces will have the same wallpaper.
     - It may be convenient to create a folder for your plugins in your home directory (e.g. `~/.chunkwm_plugins`).
 - Load it in you `chunkwmrc` file: `chunkc core::load blur.so`.
 
-If this method does not work, you can try building it from source.
-
 ## How to build from source
 ### Required
 - xcode-8 command line tools
