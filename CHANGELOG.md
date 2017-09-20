@@ -7,6 +7,10 @@
 
 ### Removed
 
+## [0.1.2]
+### Changed
+- Fix: blurred wallpaper stays the same after changing wallpaper and restarting chunkwm.
+
 ## [0.1.1]
 ### Added
 - License
