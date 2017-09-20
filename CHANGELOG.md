@@ -10,6 +10,7 @@
 ## [0.1.2]
 ### Changed
 - Fix: blurred wallpaper stays the same after changing wallpaper and restarting chunkwm.
+- CVar `wallpaper_tmp_file` changed to `wallpaper_tmp_path`.
 
 ## [0.1.1]
 ### Added

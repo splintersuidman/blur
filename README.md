@@ -20,7 +20,7 @@ all spaces will have the same wallpaper.
 
 `wallpaper_mode` (`fill`, `fit`, `stretch` or `center`): the way a wallpaper is displayed. Default: `fill`.
 
-`wallpaper_tmp_file` (string [path]): where to store the blurred wallpaper. Default: `/tmp/chunkwm-tmp-blur.jpg`.
+`wallpaper_tmp_path` (string [path]): where to store the blurred wallpaper. Default: `/tmp/`.
 
 ## How to install
 - [Download the file](https://github.com/splintah/blur/releases)
