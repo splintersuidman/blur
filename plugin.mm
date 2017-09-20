@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "../../api/plugin_api.h"
 #include "../../common/accessibility/application.h"
@@ -29,6 +30,23 @@ StringsAreEqual(const char *A, const char *B)
 {
     bool Result = (strcmp(A, B) == 0);
     return Result;
+}
+
+internal char *
+RandomString(int Length)
+{
+    char *Random = (char *) malloc(sizeof(char) * (Length + 1));
+
+    srand(time(NULL));
+
+    for (int i = 0; i < Length; i++)
+    {
+        Random[i] = 'A' + (rand() % 26);
+    }
+
+    Random[Length] = '\0';
+
+    return Random;
 }
 
 /*
@@ -81,14 +99,23 @@ PLUGIN_BOOL_FUNC(PluginInit)
     CreateCVar("wallpaper", GetPathToWallpaper());
     CreateCVar("wallpaper_blur", BlurSigma);
     CreateCVar("wallpaper_mode", (char *) "fill");
-    CreateCVar("wallpaper_tmp_file", (char *) "/tmp/chunkwm-tmp-blur.jpg");
+    CreateCVar("wallpaper_tmp_path", (char *) "/tmp/");
 
     CurrentWallpaperPath = CVarStringValue("wallpaper");
     BlurSigma = CVarFloatingPointValue("wallpaper_blur");
     WallpaperMode = CVarStringValue("wallpaper_mode");
-    TempWallpaperPath = CVarStringValue("wallpaper_tmp_file");
 
-    remove(TempWallpaperPath);
+    TempWallpaperPath = (char *) malloc(sizeof(char) *(
+        strlen(CVarStringValue("wallpaper_tmp_path")) +
+        strlen("/chunkwm-blur-.jpg") +
+        6 + 1));
+
+    sprintf(TempWallpaperPath,
+        "%s/chunkwm-blur-%s.jpg",
+        CVarStringValue("wallpaper_tmp_path"),
+        RandomString(6));
+
+    system("rm -f /tmp/chunkwm-blur*.jpg");
     BlurWallpaper(CurrentWallpaperPath, TempWallpaperPath, (double) BlurSigma);
 
     int NumberOfWindows = NumberOfWindowsOnSpace();
@@ -103,7 +130,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
     SetWallpaper(CurrentWallpaperPath, WallpaperMode);
-    remove(TempWallpaperPath);
+    system("rm -f /tmp/chunkwm-blur*.jpg");
 }
 
 // NOTE(koekeishiya): Enable to manually trigger ABI mismatch
