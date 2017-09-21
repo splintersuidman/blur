@@ -9,7 +9,7 @@
 
 #include "../../common/config/cvar.cpp"
 
-#include "blurwallpaper.h"
+#include "blur-wallpaper.h"
 #include "number-of-windows.m"
 #include "get-wallpaper.m"
 #include "set-wallpaper.m"
