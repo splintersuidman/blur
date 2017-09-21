@@ -36,7 +36,6 @@ all spaces will have the same wallpaper.
 - chunkwm
 
 ### Build process
-- Install [chunkwm](https://github.com/koekeishiya/chunkwm).
 - Clone the chunkwm repo into your home directory.
 - Clone this repo into ~/chunkwm/src/plugins.
 - Run `make` in this folder (~/chunkwm/src/plugins).
