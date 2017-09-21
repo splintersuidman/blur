@@ -1,6 +1,6 @@
 BUILD_FLAGS		= -O0 -g -std=c++11 -Wall $(shell MagickWand-config --cflags)
 BUILD_PATH		= ~/.chunkwm_plugins
-SRC				= ./plugin.mm ./blur-wallpaper.c
+SRC				= ./plugin.mm ./blurwallpaper.c
 BINS			= $(BUILD_PATH)/blur.so
 LINK			= -shared -fPIC -framework Carbon -framework Cocoa -framework ApplicationServices -framework Foundation -fmodules -fcxx-modules -mmacosx-version-min=10.6 -lsqlite3 $(shell MagickWand-config --libs) `pkg-config --cflags --libs MagickWand`
 
@@ -19,4 +19,3 @@ clean:
 
 $(BUILD_PATH)/blur.so: $(SRC) | $(BUILD_PATH)
 	clang++ $^ $(BUILD_FLAGS) -o $@ $(LINK)
-
