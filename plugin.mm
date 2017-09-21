@@ -6,8 +6,10 @@
 #include "../../common/accessibility/application.h"
 #include "../../common/accessibility/window.h"
 #include "../../common/config/cvar.h"
+#include "../../common/config/tokenize.h"
 
 #include "../../common/config/cvar.cpp"
+#include "../../common/config/tokenize.cpp"
 
 #include "blurwallpaper.h"
 #include "number-of-windows.m"
@@ -22,7 +24,7 @@ internal chunkwm_api API;
 
 internal float BlurSigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
-internal char *TempWallpaperPath = NULL;
+internal char *TmpWallpaperPath = NULL;
 internal char *WallpaperMode = NULL;
 
 inline bool
@@ -49,6 +51,46 @@ RandomString(int Length)
     return Random;
 }
 
+inline void
+DeleteImages(void)
+{
+    system("rm -f /tmp/chunkwm-blur*.jpg");
+}
+
+inline void
+GenerateTmpWallpaperPath(char *Path)
+{
+    TmpWallpaperPath = (char *) malloc(sizeof(char) * (
+        strlen("/chunkwm-blur-.jpg") +
+        strlen(Path) +
+        6
+    ));
+    sprintf(TmpWallpaperPath,
+        "%s/chunkwm-blur-%s.jpg",
+        Path,
+        RandomString(6));
+}
+
+internal void
+CommandHandler(void *Data)
+{
+    chunkwm_payload *Payload = (chunkwm_payload *) Data;
+
+    if (StringsAreEqual(Payload->Command, "wallpaper"))
+    {
+        token Token = GetToken(&Payload->Message);
+
+        if (Token.Length > 0)
+        {
+            CurrentWallpaperPath = TokenToString(Token);
+            GenerateTmpWallpaperPath(CVarStringValue("wallpaper_tmp_path"));
+
+            DeleteImages();
+            BlurWallpaper(CurrentWallpaperPath, TmpWallpaperPath, (double) BlurSigma);
+        }
+    }
+}
+
 /*
  * NOTE(koekeishiya):
  * parameter: const char *Node
@@ -62,7 +104,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
         StringsAreEqual(Node, "chunkwm_export_window_created") ||
         StringsAreEqual(Node, "chunkwm_export_window_deminimize"))
     {
-        SetWallpaper(TempWallpaperPath, WallpaperMode);
+        SetWallpaper(TmpWallpaperPath, WallpaperMode);
 
         return true;
     }
@@ -79,9 +121,13 @@ PLUGIN_MAIN_FUNC(PluginMain)
         if (NumberOfWindows == 0)
             SetWallpaper(CurrentWallpaperPath, WallpaperMode);
         else
-            SetWallpaper(TempWallpaperPath, WallpaperMode);
+            SetWallpaper(TmpWallpaperPath, WallpaperMode);
 
         return true;
+    }
+    else if (StringsAreEqual(Node, "chunkwm_daemon_command"))
+    {
+        CommandHandler(Data);
     }
 
     return false;
@@ -105,24 +151,16 @@ PLUGIN_BOOL_FUNC(PluginInit)
     BlurSigma = CVarFloatingPointValue("wallpaper_blur");
     WallpaperMode = CVarStringValue("wallpaper_mode");
 
-    TempWallpaperPath = (char *) malloc(sizeof(char) *(
-        strlen(CVarStringValue("wallpaper_tmp_path")) +
-        strlen("/chunkwm-blur-.jpg") +
-        6 + 1));
+    GenerateTmpWallpaperPath(CVarStringValue("wallpaper_tmp_path"));
 
-    sprintf(TempWallpaperPath,
-        "%s/chunkwm-blur-%s.jpg",
-        CVarStringValue("wallpaper_tmp_path"),
-        RandomString(6));
-
-    system("rm -f /tmp/chunkwm-blur*.jpg");
-    BlurWallpaper(CurrentWallpaperPath, TempWallpaperPath, (double) BlurSigma);
+    DeleteImages();
+    BlurWallpaper(CurrentWallpaperPath, TmpWallpaperPath, (double) BlurSigma);
 
     int NumberOfWindows = NumberOfWindowsOnSpace();
     if (NumberOfWindows == 0)
         SetWallpaper(CurrentWallpaperPath, WallpaperMode);
     else
-        SetWallpaper(TempWallpaperPath, WallpaperMode);
+        SetWallpaper(TmpWallpaperPath, WallpaperMode);
 
     return true;
 }
@@ -130,7 +168,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
     SetWallpaper(CurrentWallpaperPath, WallpaperMode);
-    system("rm -f /tmp/chunkwm-blur*.jpg");
+    DeleteImages();
 }
 
 // NOTE(koekeishiya): Enable to manually trigger ABI mismatch
@@ -151,11 +189,13 @@ chunkwm_plugin_export Subscriptions[] =
     chunkwm_export_application_deactivated,
     chunkwm_export_application_hidden,
     chunkwm_export_application_unhidden,
+
     chunkwm_export_window_created,
     chunkwm_export_window_destroyed,
-    chunkwm_export_space_changed,
     chunkwm_export_window_minimized,
     chunkwm_export_window_deminimized,
+
+    chunkwm_export_space_changed,
 };
 CHUNKWM_PLUGIN_SUBSCRIBE(Subscriptions)
 

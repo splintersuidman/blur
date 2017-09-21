@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- Runtime command: `chunkc blur::wallpaper [picture]` to change your wallpaper.
 
 ### Changed
 

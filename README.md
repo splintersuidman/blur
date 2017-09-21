@@ -9,18 +9,29 @@ all spaces will have the same wallpaper.
 ## Content
 - [Content](#content)
 - [Settings](#settings)
+- [Runtime commands](#runtime-commands)
 - [How to install](#how-to-install)
 - [How to build from source](#how-to-build-from-source)
 - [Changelog](#changelog)
 
 ## Settings
-`wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
+These settings can be set in your `.chunkwmrc` file.
+The syntax is `chunkc set [setting] [value]`.
+Example: `chunkc set wallpaper ~/Pictures/wallpaper.jpg`
 
-`wallpaper_blur` (float): changes the blur intensity. Default: `2.5`.
+- `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
 
-`wallpaper_mode` (`fill`, `fit`, `stretch` or `center`): the way a wallpaper is displayed. Default: `fill`.
+- `wallpaper_blur` (float): changes the blur intensity. Default: `2.5`.
 
-`wallpaper_tmp_path` (string [path]): where to store the blurred wallpaper. Default: `/tmp/`.
+- `wallpaper_mode` (`fill`, `fit`, `stretch` or `center`): the way a wallpaper is displayed. Default: `fill`.
+
+- `wallpaper_tmp_path` (string [path]): where to store the blurred wallpaper. Default: `/tmp/`.
+
+## Runtime commands
+These commands can be used while chunkwm is running, whithout the need of reloading the plugin. The syntax is `chunkc blur::[command] [args]`.
+Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
+
+- `wallpaper` (string [path]): path to you wallpaper.
 
 ## How to install
 - [Download the file](https://github.com/splintah/blur/releases)
