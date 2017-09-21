@@ -5,6 +5,7 @@
 - Runtime command: `chunkc blur::wallpaper [picture]` to change your wallpaper.
 
 ### Changed
+- Fix: deleting temporary blurred wallpapers.
 
 ### Removed
 

@@ -54,7 +54,14 @@ RandomString(int Length)
 inline void
 DeleteImages(void)
 {
-    system("rm -f /tmp/chunkwm-blur*.jpg");
+    char *DeleteCommand = (char *) malloc(sizeof(char) * (
+        strlen("rm -f /chunkwm-blur*.jpg") +
+        strlen(TmpWallpaperPath)
+    ));
+
+    sprintf(DeleteCommand, "rm -f %s/chunkwm-blur*.jpg", TmpWallpaperPath);
+
+    system(DeleteCommand);
 }
 
 inline void
