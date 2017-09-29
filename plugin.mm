@@ -25,6 +25,7 @@ internal chunkwm_api API;
 internal float BlurSigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
 internal char *TmpWallpaperPath = NULL;
+internal char *TmpWallpaperFile = NULL;
 internal char *WallpaperMode = NULL;
 
 inline bool
@@ -51,7 +52,7 @@ RandomString(int Length)
     return Random;
 }
 
-inline void
+internal void
 DeleteImages(void)
 {
     char *DeleteCommand = (char *) malloc(sizeof(char) * (
@@ -60,19 +61,20 @@ DeleteImages(void)
     ));
 
     sprintf(DeleteCommand, "rm -f %s/chunkwm-blur*.jpg", TmpWallpaperPath);
+    fprintf(stderr, "%s", DeleteCommand);
 
     system(DeleteCommand);
 }
 
 inline void
-GenerateTmpWallpaperPath(char *Path)
+GenerateTmpWallpaperFile(char *Path)
 {
-    TmpWallpaperPath = (char *) malloc(sizeof(char) * (
+    TmpWallpaperFile = (char *) malloc(sizeof(char) * (
         strlen("/chunkwm-blur-.jpg") +
         strlen(Path) +
         6
     ));
-    sprintf(TmpWallpaperPath,
+    sprintf(TmpWallpaperFile,
         "%s/chunkwm-blur-%s.jpg",
         Path,
         RandomString(6));
@@ -90,7 +92,7 @@ CommandHandler(void *Data)
         if (Token.Length > 0)
         {
             CurrentWallpaperPath = TokenToString(Token);
-            GenerateTmpWallpaperPath(CVarStringValue("wallpaper_tmp_path"));
+            GenerateTmpWallpaperFile(CVarStringValue("wallpaper_tmp_path"));
 
             DeleteImages();
             BlurWallpaper(CurrentWallpaperPath, TmpWallpaperPath, (double) BlurSigma);
@@ -111,7 +113,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
         StringsAreEqual(Node, "chunkwm_export_window_created") ||
         StringsAreEqual(Node, "chunkwm_export_window_deminimize"))
     {
-        SetWallpaper(TmpWallpaperPath, WallpaperMode);
+        SetWallpaper(TmpWallpaperFile, WallpaperMode);
 
         return true;
     }
@@ -128,7 +130,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
         if (NumberOfWindows == 0)
             SetWallpaper(CurrentWallpaperPath, WallpaperMode);
         else
-            SetWallpaper(TmpWallpaperPath, WallpaperMode);
+            SetWallpaper(TmpWallpaperFile, WallpaperMode);
 
         return true;
     }
@@ -157,17 +159,18 @@ PLUGIN_BOOL_FUNC(PluginInit)
     CurrentWallpaperPath = CVarStringValue("wallpaper");
     BlurSigma = CVarFloatingPointValue("wallpaper_blur");
     WallpaperMode = CVarStringValue("wallpaper_mode");
+    TmpWallpaperPath = CVarStringValue("wallpaper_tmp_path");
 
-    GenerateTmpWallpaperPath(CVarStringValue("wallpaper_tmp_path"));
+    GenerateTmpWallpaperFile(TmpWallpaperPath);
 
     DeleteImages();
-    BlurWallpaper(CurrentWallpaperPath, TmpWallpaperPath, (double) BlurSigma);
+    BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurSigma);
 
     int NumberOfWindows = NumberOfWindowsOnSpace();
     if (NumberOfWindows == 0)
         SetWallpaper(CurrentWallpaperPath, WallpaperMode);
     else
-        SetWallpaper(TmpWallpaperPath, WallpaperMode);
+        SetWallpaper(TmpWallpaperFile, WallpaperMode);
 
     return true;
 }
