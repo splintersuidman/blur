@@ -61,7 +61,6 @@ DeleteImages(void)
     ));
 
     sprintf(DeleteCommand, "rm -f %s/chunkwm-blur*.jpg", TmpWallpaperPath);
-    fprintf(stderr, "%s", DeleteCommand);
 
     system(DeleteCommand);
 }
@@ -92,10 +91,10 @@ CommandHandler(void *Data)
         if (Token.Length > 0)
         {
             CurrentWallpaperPath = TokenToString(Token);
-            GenerateTmpWallpaperFile(CVarStringValue("wallpaper_tmp_path"));
+            GenerateTmpWallpaperFile(TmpWallpaperPath);
 
             DeleteImages();
-            BlurWallpaper(CurrentWallpaperPath, TmpWallpaperPath, (double) BlurSigma);
+            BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurSigma);
         }
     }
 }

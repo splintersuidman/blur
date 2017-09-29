@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- Fix: deleting temporary blurred walllpapers.
 
 ### Removed
 
