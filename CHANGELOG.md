@@ -4,9 +4,15 @@
 ### Added
 
 ### Changed
-- Fix: deleting temporary blurred walllpapers.
 
 ### Removed
+
+## [0.1.4]
+### Added
+
+### Changed
+- Fix: deleting temporary blurred walllpapers.
+- Better error printing.
 
 ## [0.1.3]
 ### Changed

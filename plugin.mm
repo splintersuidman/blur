@@ -22,6 +22,7 @@ internal const char *PluginName = "blur";
 internal const char *PluginVersion = "0.1.3";
 internal chunkwm_api API;
 
+internal float BlurRange = 0.0;
 internal float BlurSigma = 0.0;
 internal char *CurrentWallpaperPath = NULL;
 internal char *TmpWallpaperPath = NULL;
@@ -94,7 +95,7 @@ CommandHandler(void *Data)
             GenerateTmpWallpaperFile(TmpWallpaperPath);
 
             DeleteImages();
-            BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurSigma);
+            BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurRange, (double) BlurSigma);
         }
     }
 }
@@ -163,7 +164,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
     GenerateTmpWallpaperFile(TmpWallpaperPath);
 
     DeleteImages();
-    BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurSigma);
+    BlurWallpaper(CurrentWallpaperPath, TmpWallpaperFile, (double) BlurRange, (double) BlurSigma);
 
     int NumberOfWindows = NumberOfWindowsOnSpace();
     if (NumberOfWindows == 0)
