@@ -19,7 +19,7 @@
 #define internal static
 
 internal const char *PluginName = "blur";
-internal const char *PluginVersion = "0.1.3";
+internal const char *PluginVersion = "0.1.4";
 internal chunkwm_api API;
 
 internal float BlurRange = 0.0;
