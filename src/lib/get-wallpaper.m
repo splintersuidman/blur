@@ -8,7 +8,7 @@
 #endif
 #include <sqlite3.h>
 
-char * GetPathToWallpaper (void)
+char *GetPathToWallpaper (void)
 {
     char *PathToFile = NULL;
 

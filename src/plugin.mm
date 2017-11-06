@@ -2,19 +2,18 @@
 #include <string.h>
 #include <time.h>
 
-#include "../../api/plugin_api.h"
-#include "../../common/accessibility/application.h"
-#include "../../common/accessibility/window.h"
-#include "../../common/config/cvar.h"
-#include "../../common/config/tokenize.h"
+#include "../../../api/plugin_api.h"
+#include "../../../common/accessibility/application.h"
+#include "../../../common/accessibility/window.h"
+#include "../../../common/config/cvar.h"
+#include "../../../common/config/tokenize.h"
+#include "../../../common/config/cvar.cpp"
+#include "../../../common/config/tokenize.cpp"
 
-#include "../../common/config/cvar.cpp"
-#include "../../common/config/tokenize.cpp"
-
-#include "blurwallpaper.h"
-#include "number-of-windows.m"
-#include "get-wallpaper.m"
-#include "set-wallpaper.m"
+#include "lib/blurwallpaper.h"
+#include "lib/number-of-windows.m"
+#include "lib/set-wallpaper.m"
+#include "lib/get-wallpaper.m"
 
 #define internal static
 
