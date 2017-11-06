@@ -1,4 +1,4 @@
-# blur [![Build Status](https://travis-ci.org/splintah/blur.svg?branch=master)](https://travis-ci.org/splintah/blur)
+# blur
 This is a plugin for [chunkwm](https://github.com/koekeishiya/chunkwm) that blurs your wallpaper when you open an application or a window.
 
 ![Demonstration](demo.gif)
