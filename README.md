@@ -21,7 +21,7 @@ Example: `chunkc set wallpaper ~/Pictures/wallpaper.jpg`
 
 - `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
 
-- `wallpaper_blur` (float): changes the blur intensity. Default: `2.5`.
+- `wallpaper_blur` (float): changes the blur intensity. Default: `0.0` (imagemagick selects a suitable value when `0.0` is used).
 
 - `wallpaper_mode` (`fill`, `fit`, `stretch` or `center`): the way a wallpaper is displayed. Default: `fill`.
 
