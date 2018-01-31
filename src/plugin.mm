@@ -110,7 +110,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
     if (StringsAreEqual(Node, "chunkwm_export_application_activated") ||
         StringsAreEqual(Node, "chunkwm_export_application_unhidden") ||
         StringsAreEqual(Node, "chunkwm_export_window_created") ||
-        StringsAreEqual(Node, "chunkwm_export_window_deminimize"))
+        StringsAreEqual(Node, "chunkwm_export_window_deminimized"))
     {
         SetWallpaper(TmpWallpaperFile, WallpaperMode);
 
