@@ -8,7 +8,7 @@
 #endif
 #include <unistd.h>
 
-int SetWallpaper (const char *NormalCStringPathToFile, char *NormalCStringMode)
+int SetWallpaper(const char *NormalCStringPathToFile, char *NormalCStringMode)
 {
     if (access(NormalCStringPathToFile, F_OK) == -1)
         return 1;
@@ -18,7 +18,8 @@ int SetWallpaper (const char *NormalCStringPathToFile, char *NormalCStringMode)
     NSString *PathToFile = [NSString stringWithCString:NormalCStringPathToFile encoding:[NSString defaultCStringEncoding]];
 
     NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
-    NSScreen *Screen = [NSScreen screens].firstObject;
+    // NSScreen *Screen = [NSScreen screens].firstObject;
+    NSScreen *Screen = [NSScreen mainScreen];
     NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen] mutableCopy];
 
     if ([Mode isEqualToString: @"fill"])

@@ -1,7 +1,7 @@
 #include <MagickWand/MagickWand.h>
 #include <stdlib.h>
 
-int BlurWallpaper (const char *Input, const char *Output, double Range, double Sigma)
+int BlurWallpaper(const char *Input, const char *Output, double Range, double Sigma)
 {
     MagickWandGenesis();
     MagickWand *Wand = NewMagickWand();

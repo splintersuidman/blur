@@ -1,7 +1,7 @@
 #include <Foundation/Foundation.h>
 #include <Cocoa/Cocoa.h>
 
-int NumberOfWindowsOnSpace (void)
+int NumberOfWindowsOnSpace(void)
 {
     CFArrayRef windowListArray = CGWindowListCreate(kCGWindowListOptionOnScreenOnly|kCGWindowListExcludeDesktopElements, kCGNullWindowID);
     NSArray *Windows = CFBridgingRelease(CGWindowListCreateDescriptionFromArray(windowListArray));

@@ -68,11 +68,14 @@ CommandHandler(void *Data)
 internal bool
 GetDesktopIdAndType(unsigned *IdDest, CGSSpaceType *TypeDest)
 {
-    CFStringRef DisplayIdentifier = AXLibGetDisplayIdentifierForMainDisplay();
-    macos_space *ActiveSpace = AXLibActiveSpace(DisplayIdentifier);
+    macos_space *ActiveSpace;
+    bool Result = AXLibActiveSpace(&ActiveSpace);
+
+    if (!Result)
+        return false;
 
     unsigned DesktopId = 1;
-    bool Result = AXLibCGSSpaceIDToDesktopID(ActiveSpace->Id, NULL, &DesktopId);
+    Result = AXLibCGSSpaceIDToDesktopID(ActiveSpace->Id, NULL, &DesktopId);
 
     if (!Result)
         return false;
