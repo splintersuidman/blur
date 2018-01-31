@@ -2,13 +2,13 @@
 #include <string.h>
 #include <time.h>
 
-#include "../../../api/plugin_api.h"
-#include "../../../common/accessibility/application.h"
-#include "../../../common/accessibility/window.h"
-#include "../../../common/config/cvar.h"
-#include "../../../common/config/tokenize.h"
-#include "../../../common/config/cvar.cpp"
-#include "../../../common/config/tokenize.cpp"
+#include "../chunkwm/src/api/plugin_api.h"
+#include "../chunkwm/src/common/accessibility/application.h"
+#include "../chunkwm/src/common/accessibility/window.h"
+#include "../chunkwm/src/common/config/cvar.h"
+#include "../chunkwm/src/common/config/tokenize.h"
+#include "../chunkwm/src/common/config/cvar.cpp"
+#include "../chunkwm/src/common/config/tokenize.cpp"
 
 #include "lib/blurwallpaper.h"
 #include "lib/number-of-windows.m"

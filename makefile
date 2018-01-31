@@ -1,5 +1,5 @@
 BUILD_FLAGS		= -O0 -g -std=c++11 -Wall $(shell MagickWand-config --cflags)
-BUILD_PATH		= ../../../plugins
+BUILD_PATH		= ./bin
 SRC				= ./src/plugin.mm src/lib/*.c
 BINS			= $(BUILD_PATH)/blur.so
 LINK			= -shared -fPIC -framework Carbon -framework Cocoa -framework ApplicationServices -framework Foundation -fmodules -fcxx-modules -mmacosx-version-min=10.6 -lsqlite3 $(shell MagickWand-config --libs) `pkg-config --cflags --libs MagickWand`
