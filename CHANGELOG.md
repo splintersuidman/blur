@@ -4,6 +4,7 @@
 ### Added
 
 ### Changed
+- Fix: change wallpaper on deminimize.
 
 ### Removed
 
