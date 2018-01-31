@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- chunkwm as submodule.
 
 ### Changed
 - Fix: change wallpaper on deminimize.

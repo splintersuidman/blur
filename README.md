@@ -44,12 +44,11 @@ Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 ### Required
 - xcode-8 command line tools
 - imagemagick
-- chunkwm
 
 ### Build process
-- Clone the chunkwm repo into your home directory.
-- Clone this repo into ~/chunkwm/src/plugins.
-- Run `make` in this folder (~/chunkwm/src/plugins).
+- Clone this repo.
+- Run `make` in this folder.
+- The binary can be found in `./bin`.
 
 ## Changelog
 [CHANGELOG.md](https://github.com/splintah/blur/blob/master/CHANGELOG.md)
