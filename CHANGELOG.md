@@ -2,12 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+## [0.2.0]
+### Added
 - chunkwm as submodule.
+- Space specific wallpapers with the rule `<space>_wallpaper`.
 
 ### Changed
 - Fix: change wallpaper on deminimize.
-
-### Removed
 
 ## [0.1.4]
 ### Changed

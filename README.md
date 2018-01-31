@@ -3,9 +3,6 @@ This is a plugin for [chunkwm](https://github.com/koekeishiya/chunkwm) that blur
 
 ![Demonstration](demo.gif)
 
-It currently does not support space-specific wallpapers;
-all spaces will have the same wallpaper.
-
 ## Content
 - [Content](#content)
 - [Settings](#settings)
@@ -19,7 +16,9 @@ These settings can be set in your `.chunkwmrc` file.
 The syntax is `chunkc set [setting] [value]`.
 Example: `chunkc set wallpaper ~/Pictures/wallpaper.jpg`
 
-- `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper.
+- `wallpaper` (string [path]): path to your wallpaper. Default: path to your current wallpaper. This is the 'global' wallpaper.
+
+- `<space>_wallpaper` (string [path]): path to a wallpaper. This wallpaper will be used on space `<space>`.
 
 - `wallpaper_blur` (float): changes the blur intensity. Default: `0.0` (imagemagick selects a suitable value when `0.0` is used).
 
