@@ -39,6 +39,23 @@ Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 - `disable`: disable blurring. Every desktop will get its wallpaper specified with `<space>_wallpaper`, but not blurred.
 
 ## How to install
+### With Homebrew
+Thanks to [crisidev](https://github.com/crisidev) for providing a homebrew formula.
+
+```bash
+# Clone the tap.
+brew tap crisidev/homebrew-chunkwm
+
+# Install the plugin.
+brew install chunkwm-blur --HEAD
+
+# Get info about the plugin (e.g. loading it from your chunkwmrc).
+brew info chunkwm-blur
+```
+
+### Downloading from GitHub
+The precompiled releases can often be found on the GitHub releases page.
+
 - [Download the file](https://github.com/splintah/blur/releases)
 - Place it into your plugin directory
     - This is the directory specified in your `chunkwmrc` file after `chunkc core::plugin_dir`.
