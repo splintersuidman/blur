@@ -16,7 +16,7 @@
 #include "../chunkwm/src/common/ipc/daemon.cpp"
 
 #include "lib/blurwallpaper.h"
-#include "lib/number-of-windows.m"
+#include "lib/number-of-windows.mm"
 #include "lib/set-wallpaper.m"
 #include "lib/get-wallpaper.m"
 
@@ -108,7 +108,7 @@ CommandHandler(void *Data)
 }
 
 internal bool
-GetDesktopIdAndType(unsigned *IdDest, CGSSpaceType *TypeDest)
+GetSpaceAndDesktopId(macos_space **SpaceDest, unsigned *IdDest)
 {
     macos_space *ActiveSpace;
     bool Result = AXLibActiveSpace(&ActiveSpace);
@@ -122,8 +122,8 @@ GetDesktopIdAndType(unsigned *IdDest, CGSSpaceType *TypeDest)
     if (!Result)
         return false;
 
+    *SpaceDest = ActiveSpace;
     *IdDest = DesktopId;
-    *TypeDest = ActiveSpace->Type;
     return true;
 }
 
@@ -192,16 +192,17 @@ PLUGIN_MAIN_FUNC(PluginMain)
         StringsAreEqual(Node, "chunkwm_export_window_destroyed") ||
         StringsAreEqual(Node, "chunkwm_export_window_minimized"))
     {
+        macos_space *Space;
         unsigned DesktopId = 1;
-        CGSSpaceType DesktopType = 0;
-        bool Result = GetDesktopIdAndType(&DesktopId, &DesktopType);
+        bool Result = GetSpaceAndDesktopId(&Space, &DesktopId);
         if (!Result)
             return false;
 
-        if (DesktopType != kCGSSpaceUser)
+        if (Space->Type != kCGSSpaceUser)
             return true;
 
-        int NumberOfWindows = NumberOfWindowsOnSpace();
+        int NumberOfWindows = NumberOfWindowsOnSpace(Space->Id);
+        fprintf(stderr, "%d\n", NumberOfWindows);
         bool Blurred = NumberOfWindows > 0 && DoBlur;
 
         SetWallpaper(GetWallpaperPath(DesktopId, Blurred), WallpaperMode);
@@ -241,9 +242,9 @@ PLUGIN_BOOL_FUNC(PluginInit)
 
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
+    macos_space *Space;
     unsigned DesktopId = 1;
-    CGSSpaceType DesktopType;
-    bool Result = GetDesktopIdAndType(&DesktopId, &DesktopType);
+    bool Result = GetSpaceAndDesktopId(&Space, &DesktopId);
     if (Result)
     {
         SetWallpaper(GetWallpaperPath(DesktopId, false), WallpaperMode);

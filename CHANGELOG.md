@@ -7,6 +7,7 @@
 
 ### Changed
 - Fix: setting wallpaper on correct screen when working with more than one screen.
+- Fix: count windows on _active_ space, instead of on all _visible_ spaces.
 
 ### Removed
 
