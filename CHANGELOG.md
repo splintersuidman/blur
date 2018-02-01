@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.2.1]
 ### Added
 - Runtime commands to enable/disable blurring. Use `chunkc blur::enable` to enable blurring; use `chunkc blur::disable` to disable blurring.
 - Help message. Run `chunkc blur::help` for help about variables and commands.
@@ -10,7 +12,7 @@
 - Fix: setting wallpaper on correct screen when working with more than one screen.
 - Fix: count windows on _active_ space, instead of on all _visible_ spaces.
 
-### Removed
+---
 
 ## [0.2.0]
 ### Added
@@ -20,10 +22,14 @@
 ### Changed
 - Fix: change wallpaper on deminimize.
 
+---
+
 ## [0.1.4]
 ### Changed
 - Fix: deleting temporary blurred walllpapers.
 - Better error printing.
+
+---
 
 ## [0.1.3]
 ### Changed
@@ -32,10 +38,14 @@
 ### Added
 - Runtime command: `chunkc blur::wallpaper [picture]` to change your wallpaper.
 
+---
+
 ## [0.1.2]
 ### Changed
 - Fix: blurred wallpaper stays the same after changing wallpaper and restarting chunkwm.
 - CVar `wallpaper_tmp_file` changed to `wallpaper_tmp_path`.
+
+---
 
 ## [0.1.1]
 ### Added
@@ -45,6 +55,8 @@
 
 ### Changed
 - Fix: remove wallpaper on load/unload.
+
+---
 
 ## [0.1.0]
 ### Initial release

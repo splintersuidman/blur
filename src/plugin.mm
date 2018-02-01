@@ -23,7 +23,7 @@
 #define internal static
 
 internal const char *PluginName = "blur";
-internal const char *PluginVersion = "0.2.0";
+internal const char *PluginVersion = "0.2.1";
 internal chunkwm_api API;
 
 internal bool DoBlur = true;
