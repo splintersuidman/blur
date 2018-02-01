@@ -1,9 +1,9 @@
 export PATH := /usr/local/bin:$(PATH)
 BUILD_FLAGS		= -O0 -g -std=c++11 -Wall $(shell MagickWand-config --cflags)
 BUILD_PATH		= ./bin
-SRC				= ./src/plugin.mm src/lib/*.c
+SRC				= ./src/plugin.mm
 BINS			= $(BUILD_PATH)/blur.so
-LINK			= -shared -fPIC -framework Carbon -framework Cocoa -framework ApplicationServices -framework Foundation -fmodules -fcxx-modules -mmacosx-version-min=10.6 -lsqlite3 $(shell MagickWand-config --libs) `pkg-config --cflags --libs MagickWand`
+LINK			= -shared -fPIC -framework Foundation -fmodules -fcxx-modules -mmacosx-version-min=10.6 -lsqlite3 $(shell MagickWand-config --libs) `pkg-config --cflags --libs MagickWand`
 
 all: $(BINS)
 
