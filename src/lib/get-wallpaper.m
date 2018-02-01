@@ -19,10 +19,10 @@ char *GetPathToWallpaper(void)
     BOOL IsDir;
     NSFileManager *FileManager = [NSFileManager defaultManager];
 
-    // check if file is a directory
+    // Check if file is a directory.
     [FileManager fileExistsAtPath:Path isDirectory:&IsDir];
 
-    // if directory, check db
+    // If directory, check db.
     if (IsDir)
     {
         NSArray *Dirs = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -42,13 +42,11 @@ char *GetPathToWallpaper(void)
                     File = @((char *)sqlite3_column_text(Statement, 0));
                 }
 
-                // printf("%s/%s\n", Path.UTF8String, File.UTF8String);
                 PathToFile = (char *) malloc(
                     sizeof(char) * strlen(Path.UTF8String) +
                     sizeof(char) * strlen(File.UTF8String) +
                     sizeof(char) * 1);
                 sprintf(PathToFile, "%s/%s", Path.UTF8String, File.UTF8String);
-                // printf("%s\n", PathToFile);
                 sqlite3_finalize(Statement);
             }
 
@@ -59,7 +57,6 @@ char *GetPathToWallpaper(void)
     {
         PathToFile = (char *) malloc(sizeof(char) * strlen(Path.UTF8String));
         sprintf(PathToFile, "%s", Path.UTF8String);
-        // printf("%s\n", PathToFile);
     }
     return PathToFile;
 }

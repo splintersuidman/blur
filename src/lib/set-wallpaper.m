@@ -18,7 +18,6 @@ int SetWallpaper(const char *NormalCStringPathToFile, char *NormalCStringMode)
     NSString *PathToFile = [NSString stringWithCString:NormalCStringPathToFile encoding:[NSString defaultCStringEncoding]];
 
     NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
-    // NSScreen *Screen = [NSScreen screens].firstObject;
     NSScreen *Screen = [NSScreen mainScreen];
     NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen] mutableCopy];
 
