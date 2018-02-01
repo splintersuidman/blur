@@ -196,17 +196,11 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
  * */
 PLUGIN_MAIN_FUNC(PluginMain)
 {
-    if (StringsAreEqual(Node, "chunkwm_export_application_activated") ||
-        StringsAreEqual(Node, "chunkwm_export_application_unhidden") ||
-        StringsAreEqual(Node, "chunkwm_export_window_created") ||
-        StringsAreEqual(Node, "chunkwm_export_window_deminimized") ||
-        StringsAreEqual(Node, "chunkwm_export_application_launched") ||
-        StringsAreEqual(Node, "chunkwm_export_application_terminated") ||
-        StringsAreEqual(Node, "chunkwm_export_application_deactivated") ||
-        StringsAreEqual(Node, "chunkwm_export_application_hidden") ||
-        StringsAreEqual(Node, "chunkwm_export_space_changed") ||
-        StringsAreEqual(Node, "chunkwm_export_window_destroyed") ||
-        StringsAreEqual(Node, "chunkwm_export_window_minimized"))
+    if (StringsAreEqual(Node, "chunkwm_daemon_command"))
+    {
+        CommandHandler(Data);
+    }
+    else
     {
         macos_space *Space;
         unsigned DesktopId = 1;
@@ -223,10 +217,6 @@ PLUGIN_MAIN_FUNC(PluginMain)
         SetWallpaper(GetWallpaperPath(DesktopId, Blurred), CVarStringValue("wallpaper_mode"));
 
         return true;
-    }
-    else if (StringsAreEqual(Node, "chunkwm_daemon_command"))
-    {
-        CommandHandler(Data);
     }
 
     return false;
@@ -284,6 +274,7 @@ chunkwm_plugin_export Subscriptions[] =
     chunkwm_export_window_minimized,
     chunkwm_export_window_deminimized,
 
+    chunkwm_export_display_changed,
     chunkwm_export_space_changed,
 };
 CHUNKWM_PLUGIN_SUBSCRIBE(Subscriptions)
@@ -295,21 +286,24 @@ void SetOptionsForMode(NSMutableDictionary **Options, const char *Mode)
 {
     if (strcmp(Mode, "fill") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
+        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
+            forKey:NSWorkspaceDesktopImageScalingKey];
         [*Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 
     if (strcmp(Mode, "fit") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
+        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
+            forKey:NSWorkspaceDesktopImageScalingKey];
         [*Options setObject:[NSNumber numberWithBool:NO]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 
     if (strcmp(Mode, "stretch") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently] forKey:NSWorkspaceDesktopImageScalingKey];
+        [*Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently]
+            forKey:NSWorkspaceDesktopImageScalingKey];
         [*Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
