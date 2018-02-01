@@ -1,3 +1,4 @@
+export PATH := /usr/local/bin:$(PATH)
 BUILD_FLAGS		= -O0 -g -std=c++11 -Wall $(shell MagickWand-config --cflags)
 BUILD_PATH		= ./bin
 SRC				= ./src/plugin.mm src/lib/*.c
