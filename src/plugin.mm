@@ -202,7 +202,6 @@ PLUGIN_MAIN_FUNC(PluginMain)
             return true;
 
         int NumberOfWindows = NumberOfWindowsOnSpace(Space->Id);
-        fprintf(stderr, "%d\n", NumberOfWindows);
         bool Blurred = NumberOfWindows > 0 && DoBlur;
 
         SetWallpaper(GetWallpaperPath(DesktopId, Blurred), WallpaperMode);
