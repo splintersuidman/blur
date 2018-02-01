@@ -32,6 +32,10 @@ Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 
 - `wallpaper` (string [path]): path to you wallpaper.
 
+- `enable`: enable blurring. Blurring is enabled by default.
+
+- `disable`: disable blurring. Every desktop will get its wallpaper specified with `<space>_wallpaper`, but not blurred.
+
 ## How to install
 - [Download the file](https://github.com/splintah/blur/releases)
 - Place it into your plugin directory

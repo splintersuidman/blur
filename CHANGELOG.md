@@ -2,8 +2,10 @@
 
 ## [Unreleased]
 ### Added
+- Runtime commands to enable/disable blurring. Use `chunkc blur::enable` to enable blurring; use `chunkc blur::disable` to disable blurring.
 
 ### Changed
+- Fix: setting wallpaper on correct screen when working with more than one screen.
 
 ### Removed
 

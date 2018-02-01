@@ -24,6 +24,7 @@ internal const char *PluginName = "blur";
 internal const char *PluginVersion = "0.2.0";
 internal chunkwm_api API;
 
+internal bool DoBlur = true;
 internal float BlurRange = 0.0;
 internal float BlurSigma = 0.0;
 internal char *TmpWallpaperPath = NULL;
@@ -62,6 +63,14 @@ CommandHandler(void *Data)
         {
             UpdateCVar("wallpaper", TokenToString(Token));
         }
+    }
+    else if (StringsAreEqual(Payload->Command, "enable"))
+    {
+        DoBlur = true;
+    }
+    else if (StringsAreEqual(Payload->Command, "disable"))
+    {
+        DoBlur = false;
     }
 }
 
@@ -160,7 +169,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
             return true;
 
         int NumberOfWindows = NumberOfWindowsOnSpace();
-        bool Blurred = NumberOfWindows > 0;
+        bool Blurred = NumberOfWindows > 0 && DoBlur;
 
         SetWallpaper(GetWallpaperPath(DesktopId, Blurred), WallpaperMode);
 
