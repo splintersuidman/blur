@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Reset wallpaper on all spaces on unload, and with `chunkc blur::reset`.
+
+---
 
 ## [0.2.1]
 ### Added

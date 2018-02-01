@@ -38,6 +38,8 @@ Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 
 - `disable`: disable blurring. Every desktop will get its wallpaper specified with `<space>_wallpaper`, but not blurred.
 
+- `reset`: reset wallpaper on all spaces. This also disables blurring.
+
 ## How to install
 ### With Homebrew
 Thanks to [crisidev](https://github.com/crisidev) for providing a homebrew formula.

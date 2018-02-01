@@ -19,6 +19,7 @@
 #include "lib/number-of-windows.mm"
 #include "lib/set-wallpaper.m"
 #include "lib/get-wallpaper.m"
+#include "lib/reset-wallpaper.m"
 
 #define internal static
 
@@ -57,7 +58,12 @@ Runtime commands. Run these with `chunkc blur::<command>'\n\
     Enable blurring. Blurring is enabled by default.\n\
   disable:\n\
     Disable blurring.\n\
-    Every desktop will get its wallpaper specified with <space>_wallpaper, but not blurred.\n";
+    Every desktop will get its wallpaper specified with <space>_wallpaper, but not blurred.\n\
+  reset:\n\
+    Reset wallpaper on all spaces.\n\
+    The wallpaper will be set to the wallpaper specified with `chunkc set wallpaper'.\n\
+    This also disables blurring.\n\
+";
 
 inline bool
 StringsAreEqual(const char *A, const char *B)
@@ -96,14 +102,24 @@ CommandHandler(void *Data)
     else if (StringsAreEqual(Payload->Command, "enable"))
     {
         DoBlur = true;
+        WriteToSocket("Enabled blur.\n", Payload->SockFD);
     }
     else if (StringsAreEqual(Payload->Command, "disable"))
     {
         DoBlur = false;
+        WriteToSocket("Disabled blur.\n", Payload->SockFD);
     }
     else if (StringsAreEqual(Payload->Command, "help"))
     {
         WriteToSocket(HelpMessage, Payload->SockFD);
+    }
+    else if (StringsAreEqual(Payload->Command, "reset"))
+    {
+        DoBlur = false;
+        ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"));
+
+        WriteToSocket("Disabled blur.\n", Payload->SockFD);
+        WriteToSocket("Reset wallpaper on all screens.\n", Payload->SockFD);
     }
 }
 
@@ -241,13 +257,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
-    macos_space *Space;
-    unsigned DesktopId = 1;
-    bool Result = GetSpaceAndDesktopId(&Space, &DesktopId);
-    if (Result)
-    {
-        SetWallpaper(GetWallpaperPath(DesktopId, false), WallpaperMode);
-    }
+    ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"));
     DeleteImages();
 }
 
