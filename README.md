@@ -30,6 +30,8 @@ Example: `chunkc set wallpaper ~/Pictures/wallpaper.jpg`
 These commands can be used while chunkwm is running, whithout the need of reloading the plugin. The syntax is `chunkc blur::[command] [args]`.
 Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 
+- `help`: show help about the settings and commands.
+
 - `wallpaper` (string [path]): path to you wallpaper.
 
 - `enable`: enable blurring. Blurring is enabled by default.

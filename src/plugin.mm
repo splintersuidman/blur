@@ -8,10 +8,12 @@
 #include "../chunkwm/src/common/accessibility/window.h"
 #include "../chunkwm/src/common/config/cvar.h"
 #include "../chunkwm/src/common/config/tokenize.h"
-#include "../chunkwm/src/common/config/cvar.cpp"
-#include "../chunkwm/src/common/config/tokenize.cpp"
+#include "../chunkwm/src/common/ipc/daemon.h"
 
 #include "../chunkwm/src/common/accessibility/display.mm"
+#include "../chunkwm/src/common/config/cvar.cpp"
+#include "../chunkwm/src/common/config/tokenize.cpp"
+#include "../chunkwm/src/common/ipc/daemon.cpp"
 
 #include "lib/blurwallpaper.h"
 #include "lib/number-of-windows.m"
@@ -29,6 +31,33 @@ internal float BlurRange = 0.0;
 internal float BlurSigma = 0.0;
 internal char *TmpWallpaperPath = NULL;
 internal char *WallpaperMode = NULL;
+
+internal const char *HelpMessage =
+"blur by splintah\n\
+https://github.com/splintah/blur\n\n\
+Variables. Set these in your cunkwmrc with `chunkc set <name> <value>'\n\
+  wallpaper (path):\n\
+    Path to your wallpaper.\n\
+    Default: path to your current wallpaper.\n\
+    This is the 'global' wallpaper.\n\
+  <space>_wallpaper (path):\n\
+    Path to a wallpaper.\n\
+    This wallpaper will be used on space <space>.\n\
+  wallpaper_blur (float):\n\
+    Changes the blur intensity.\n\
+    Default: 0.0 (imagemagick selects a suitable value when 0.0 is used).\n\
+  wallpaper_mode (`fill', `fit', `stretch' or `center'):\n\
+    The way a wallpaper is displayed. Default: `fill'.\n\
+  wallpaper_tmp_path (path): \n\
+    Where to store the blurred wallpaper. Default: `/tmp/'.\n\n\
+Runtime commands. Run these with `chunkc blur::<command>'\n\
+  wallpaper (path):\n\
+    Set the wallpaper path while running chunkwm.\n\
+  enable:\n\
+    Enable blurring. Blurring is enabled by default.\n\
+  disable:\n\
+    Disable blurring.\n\
+    Every desktop will get its wallpaper specified with <space>_wallpaper, but not blurred.\n";
 
 inline bool
 StringsAreEqual(const char *A, const char *B)
@@ -71,6 +100,10 @@ CommandHandler(void *Data)
     else if (StringsAreEqual(Payload->Command, "disable"))
     {
         DoBlur = false;
+    }
+    else if (StringsAreEqual(Payload->Command, "help"))
+    {
+        WriteToSocket(HelpMessage, Payload->SockFD);
     }
 }
 
