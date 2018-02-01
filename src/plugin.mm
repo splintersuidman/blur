@@ -31,7 +31,6 @@ internal bool DoBlur = true;
 internal float BlurRange = 0.0;
 internal float BlurSigma = 0.0;
 internal char *TmpWallpaperPath = NULL;
-internal char *WallpaperMode = NULL;
 
 internal const char *HelpMessage =
 "blur by splintah\n\
@@ -116,7 +115,7 @@ CommandHandler(void *Data)
     else if (StringsAreEqual(Payload->Command, "reset"))
     {
         DoBlur = false;
-        ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"));
+        ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
 
         WriteToSocket("Disabled blur.\n", Payload->SockFD);
         WriteToSocket("Reset wallpaper on all screens.\n", Payload->SockFD);
@@ -220,7 +219,7 @@ PLUGIN_MAIN_FUNC(PluginMain)
         int NumberOfWindows = NumberOfWindowsOnSpace(Space->Id);
         bool Blurred = NumberOfWindows > 0 && DoBlur;
 
-        SetWallpaper(GetWallpaperPath(DesktopId, Blurred), WallpaperMode);
+        SetWallpaper(GetWallpaperPath(DesktopId, Blurred), CVarStringValue("wallpaper_mode"));
 
         return true;
     }
@@ -247,7 +246,6 @@ PLUGIN_BOOL_FUNC(PluginInit)
     CreateCVar("wallpaper_tmp_path", (char *) "/tmp/");
 
     BlurSigma = CVarFloatingPointValue("wallpaper_blur");
-    WallpaperMode = CVarStringValue("wallpaper_mode");
     TmpWallpaperPath = CVarStringValue("wallpaper_tmp_path");
 
     DeleteImages();
@@ -257,7 +255,7 @@ PLUGIN_BOOL_FUNC(PluginInit)
 
 PLUGIN_VOID_FUNC(PluginDeInit)
 {
-    ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"));
+    ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
     DeleteImages();
 }
 

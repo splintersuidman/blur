@@ -1,6 +1,6 @@
 #include <Foundation/Foundation.h>
 
-bool ResetWallpaperOnAllSpaces(const char *WallpaperFile)
+bool ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode)
 {
     bool Success = true;
 
@@ -11,9 +11,31 @@ bool ResetWallpaperOnAllSpaces(const char *WallpaperFile)
         NSScreen *Screen = Screens[i];
         NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
         NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen] mutableCopy];
-        [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
-            forKey:NSWorkspaceDesktopImageScalingKey];
-        [Options setObject:[NSNumber numberWithBool:YES] forKey:NSWorkspaceDesktopImageAllowClippingKey];
+
+        if (strcmp(Mode, "fill") == 0)
+        {
+            [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
+            [Options setObject:[NSNumber numberWithBool:YES] forKey:NSWorkspaceDesktopImageAllowClippingKey];
+        }
+
+        if (strcmp(Mode, "fit") == 0)
+        {
+            [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown] forKey:NSWorkspaceDesktopImageScalingKey];
+            [Options setObject:[NSNumber numberWithBool:NO] forKey:NSWorkspaceDesktopImageAllowClippingKey];
+        }
+
+        if (strcmp(Mode, "stretch") == 0)
+        {
+            [Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently] forKey:NSWorkspaceDesktopImageScalingKey];
+            [Options setObject:[NSNumber numberWithBool:YES] forKey:NSWorkspaceDesktopImageAllowClippingKey];
+        }
+
+        if (strcmp(Mode, "center") == 0)
+        {
+            [Options setObject:[NSNumber numberWithInt:NSImageScaleNone] forKey:NSWorkspaceDesktopImageScalingKey];
+            [Options setObject:[NSNumber numberWithBool:NO] forKey:NSWorkspaceDesktopImageAllowClippingKey];
+        }
+
         NSError *Error;
 
         NSString *PathToFile = [NSString
