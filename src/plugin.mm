@@ -101,11 +101,15 @@ CommandHandler(void *Data)
     }
     else if (StringsAreEqual(Payload->Command, "enable"))
     {
+        API.Log(C_LOG_LEVEL_DEBUG, "blur: enabling.\n");
+
         DoBlur = true;
         WriteToSocket("Enabled blur.\n", Payload->SockFD);
     }
     else if (StringsAreEqual(Payload->Command, "disable"))
     {
+        API.Log(C_LOG_LEVEL_DEBUG, "blur: disabling.\n");
+
         DoBlur = false;
         WriteToSocket("Disabled blur.\n", Payload->SockFD);
     }
@@ -115,6 +119,8 @@ CommandHandler(void *Data)
     }
     else if (StringsAreEqual(Payload->Command, "reset"))
     {
+        API.Log(C_LOG_LEVEL_DEBUG, "blur: resetting wallpaper on all spaces.\n");
+
         DoBlur = false;
         ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
 
@@ -414,21 +420,21 @@ int BlurWallpaper(const char *Input, const char *Output, double Range, double Si
     MagickBooleanType Status = MagickReadImage(Wand, Input);
     if (Status == MagickFalse)
     {
-        fprintf(stderr, "blur: could not find image\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: could not find image,\n");
         return 1;
     }
 
     Status = MagickBlurImage(Wand, Range, Sigma);
     if (Status == MagickFalse)
     {
-        fprintf(stderr, "blur: could not blur image\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: could not blur image.\n");
         return 2;
     }
 
     Status = MagickWriteImage(Wand, Output);
     if (Status == MagickFalse)
     {
-        fprintf(stderr, "blur: could not write image\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: could not write image.\n");
         return 3;
     }
 
