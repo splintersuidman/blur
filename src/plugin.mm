@@ -76,9 +76,7 @@ internal void
 DeleteImages(void)
 {
     char *DeleteCommand = (char *) malloc(sizeof(char) * (
-        strlen("rm -f /chunkwm-blur*.jpg") +
-        strlen(TmpWallpaperPath)
-    ));
+        strlen("rm -f /chunkwm-blur*.jpg") + strlen(TmpWallpaperPath)));
 
     sprintf(DeleteCommand, "rm -f %s/chunkwm-blur*.jpg", TmpWallpaperPath);
 
@@ -169,8 +167,7 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
                 CVarStringValue(SpaceSpecificRule),
                 WallpaperFile,
                 (double) BlurRange,
-                (double) BlurSigma
-            );
+                (double) BlurSigma);
         }
     }
     else
@@ -186,8 +183,7 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
                 CVarStringValue("wallpaper"),
                 WallpaperFile,
                 (double) BlurRange,
-                (double) BlurSigma
-            );
+                (double) BlurSigma);
         }
     }
 
@@ -381,9 +377,7 @@ int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
         error:&Error];
 
     if (!Success)
-    {
         return 1;
-    }
 
     return 0;
 }
@@ -404,7 +398,8 @@ int NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
         macos_window *Window;
         while ((Window = *WindowList++))
         {
-            if (AXLibSpaceHasWindow(SpaceId, Window->Id) && !AXLibIsWindowMinimized(Window->Ref))
+            if (AXLibSpaceHasWindow(SpaceId, Window->Id)
+                && !AXLibHasFlags(Window, Window_Minimized))
                 NumberOfWindows++;
         }
     }
