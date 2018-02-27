@@ -284,37 +284,37 @@ CHUNKWM_PLUGIN_SUBSCRIBE(Subscriptions)
 // NOTE(koekeishiya): Generate plugin
 CHUNKWM_PLUGIN(PluginName, PluginVersion);
 
-void SetOptionsForMode(NSMutableDictionary **Options, const char *Mode)
+void SetOptionsForMode(NSMutableDictionary *Options, const char *Mode)
 {
     if (strcmp(Mode, "fill") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
+        [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
             forKey:NSWorkspaceDesktopImageScalingKey];
-        [*Options setObject:[NSNumber numberWithBool:YES]
+        [Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 
     if (strcmp(Mode, "fit") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
+        [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
             forKey:NSWorkspaceDesktopImageScalingKey];
-        [*Options setObject:[NSNumber numberWithBool:NO]
+        [Options setObject:[NSNumber numberWithBool:NO]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 
     if (strcmp(Mode, "stretch") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently]
+        [Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently]
             forKey:NSWorkspaceDesktopImageScalingKey];
-        [*Options setObject:[NSNumber numberWithBool:YES]
+        [Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 
     if (strcmp(Mode, "center") == 0)
     {
-        [*Options setObject:[NSNumber numberWithInt:NSImageScaleNone]
+        [Options setObject:[NSNumber numberWithInt:NSImageScaleNone]
             forKey:NSWorkspaceDesktopImageScalingKey];
-        [*Options setObject:[NSNumber numberWithBool:NO]
+        [Options setObject:[NSNumber numberWithBool:NO]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
 }
@@ -332,7 +332,7 @@ bool ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode)
         NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen]
             mutableCopy];
 
-        SetOptionsForMode(&Options, Mode);
+        SetOptionsForMode(Options, Mode);
 
         NSError *Error;
 
@@ -357,7 +357,7 @@ int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
     if (access(NormalCStringPathToFile, F_OK) == -1)
         return 1;
 
-    // Convert the C type to the Objective-C type...
+    // Convert the C type to the Objective-C type.
     NSString *PathToFile = [NSString
         stringWithCString:NormalCStringPathToFile
         encoding:[NSString defaultCStringEncoding]];
@@ -366,7 +366,7 @@ int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
     NSScreen *Screen = [NSScreen mainScreen];
     NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen] mutableCopy];
 
-    SetOptionsForMode(&Options, Mode);
+    SetOptionsForMode(Options, Mode);
 
     NSError *Error;
 
