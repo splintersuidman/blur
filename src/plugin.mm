@@ -19,7 +19,7 @@
 #define internal static
 
 bool ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode);
-int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode);
+bool SetWallpaper(const char *NormalCStringPathToFile, const char *Mode);
 int NumberOfWindowsOnSpace(CGSSpaceID SpaceId);
 int BlurWallpaper(const char *Input, const char *Output, double Range, double Sigma);
 char *GetPathToWallpaper(void);
@@ -88,42 +88,43 @@ CommandHandler(void *Data)
 {
     chunkwm_payload *Payload = (chunkwm_payload *) Data;
 
-    if (StringsAreEqual(Payload->Command, "wallpaper"))
-    {
+    if (StringsAreEqual(Payload->Command, "wallpaper")) {
         token Token = GetToken(&Payload->Message);
 
-        if (Token.Length > 0)
-        {
+        if (Token.Length > 0) {
             UpdateCVar("wallpaper", TokenToString(Token));
         }
     }
-    else if (StringsAreEqual(Payload->Command, "enable"))
-    {
+    else if (StringsAreEqual(Payload->Command, "enable")) {
         API.Log(C_LOG_LEVEL_DEBUG, "blur: enabling.\n");
 
         DoBlur = true;
         WriteToSocket("Enabled blur.\n", Payload->SockFD);
     }
-    else if (StringsAreEqual(Payload->Command, "disable"))
-    {
+    else if (StringsAreEqual(Payload->Command, "disable")) {
         API.Log(C_LOG_LEVEL_DEBUG, "blur: disabling.\n");
 
         DoBlur = false;
         WriteToSocket("Disabled blur.\n", Payload->SockFD);
     }
-    else if (StringsAreEqual(Payload->Command, "help"))
-    {
+    else if (StringsAreEqual(Payload->Command, "help")) {
         WriteToSocket(HelpMessage, Payload->SockFD);
     }
-    else if (StringsAreEqual(Payload->Command, "reset"))
-    {
+    else if (StringsAreEqual(Payload->Command, "reset")) {
         API.Log(C_LOG_LEVEL_DEBUG, "blur: resetting wallpaper on all spaces.\n");
 
         DoBlur = false;
-        ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
+        bool Result = ResetWallpaperOnAllSpaces(
+            CVarStringValue("wallpaper"),
+            CVarStringValue("wallpaper_mode")
+        );
 
         WriteToSocket("Disabled blur.\n", Payload->SockFD);
-        WriteToSocket("Reset wallpaper on all screens.\n", Payload->SockFD);
+        if (Result) {
+            WriteToSocket("Reset wallpaper on all screens.\n", Payload->SockFD);
+        } else {
+            WriteToSocket("Error: could not reset wallpaper on all screens.\n", Payload->SockFD);
+        }
     }
 }
 
@@ -133,17 +134,20 @@ GetSpaceAndDesktopId(macos_space **SpaceDest, unsigned *IdDest)
     macos_space *ActiveSpace;
     bool Result = AXLibActiveSpace(&ActiveSpace);
 
-    if (!Result)
+    if (!Result) {
         return false;
+    }
 
     unsigned DesktopId = 1;
     Result = AXLibCGSSpaceIDToDesktopID(ActiveSpace->Id, NULL, &DesktopId);
 
-    if (!Result)
+    if (!Result) {
         return false;
+    }
 
     *SpaceDest = ActiveSpace;
     *IdDest = DesktopId;
+
     return true;
 }
 
@@ -154,36 +158,36 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
     snprintf(SpaceSpecificRule, 128, "%d_wallpaper", DesktopId);
 
     char *WallpaperFile = (char *) malloc(128);
-    if (CVarExists(SpaceSpecificRule))
-    {
-        if (!Blurred)
+    if (CVarExists(SpaceSpecificRule)) {
+        if (!Blurred) {
             return CVarStringValue(SpaceSpecificRule);
+        }
 
         snprintf(WallpaperFile, 128, "%s/chunkwm-blur-%d.jpg", TmpWallpaperPath, DesktopId);
 
-        if (access(WallpaperFile, F_OK) == -1)
-        {
+        if (access(WallpaperFile, F_OK) == -1) {
             BlurWallpaper(
                 CVarStringValue(SpaceSpecificRule),
                 WallpaperFile,
                 (double) BlurRange,
-                (double) BlurSigma);
+                (double) BlurSigma
+            );
         }
     }
-    else
-    {
-        if (!Blurred)
+    else {
+        if (!Blurred) {
             return CVarStringValue("wallpaper");
+        }
 
         snprintf(WallpaperFile, 128, "%s/chunkwm-blur-global.jpg", TmpWallpaperPath);
 
-        if (access(WallpaperFile, F_OK) == -1)
-        {
+        if (access(WallpaperFile, F_OK) == -1) {
             BlurWallpaper(
                 CVarStringValue("wallpaper"),
                 WallpaperFile,
                 (double) BlurRange,
-                (double) BlurSigma);
+                (double) BlurSigma
+            );
         }
     }
 
@@ -198,27 +202,25 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
  * */
 PLUGIN_MAIN_FUNC(PluginMain)
 {
-    if (StringsAreEqual(Node, "chunkwm_daemon_command"))
-    {
+    if (StringsAreEqual(Node, "chunkwm_daemon_command")) {
         CommandHandler(Data);
     }
-    else
-    {
+    else {
         macos_space *Space;
         unsigned DesktopId = 1;
         bool Result = GetSpaceAndDesktopId(&Space, &DesktopId);
-        if (!Result)
+        if (!Result) {
             return false;
+        }
 
-        if (Space->Type != kCGSSpaceUser)
+        if (Space->Type != kCGSSpaceUser) {
             return true;
+        }
 
         int NumberOfWindows = NumberOfWindowsOnSpace(Space->Id);
         bool Blurred = NumberOfWindows > 0 && DoBlur;
 
-        SetWallpaper(GetWallpaperPath(DesktopId, Blurred), CVarStringValue("wallpaper_mode"));
-
-        return true;
+        return SetWallpaper(GetWallpaperPath(DesktopId, Blurred), CVarStringValue("wallpaper_mode"));
     }
 
     return false;
@@ -252,12 +254,6 @@ PLUGIN_VOID_FUNC(PluginDeInit)
     DeleteImages();
 }
 
-// NOTE(koekeishiya): Enable to manually trigger ABI mismatch
-#if 0
-#undef CHUNKWM_PLUGIN_API_VERSION
-#define CHUNKWM_PLUGIN_API_VERSION 0
-#endif
-
 // NOTE(koekeishiya): Initialize plugin function pointers.
 CHUNKWM_PLUGIN_VTABLE(PluginInit, PluginDeInit, PluginMain)
 
@@ -286,32 +282,25 @@ CHUNKWM_PLUGIN(PluginName, PluginVersion);
 
 void SetOptionsForMode(NSMutableDictionary *Options, const char *Mode)
 {
-    if (strcmp(Mode, "fill") == 0)
-    {
+    if (StringsAreEqual(Mode, "fill")) {
         [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
             forKey:NSWorkspaceDesktopImageScalingKey];
         [Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
-
-    if (strcmp(Mode, "fit") == 0)
-    {
+    else if (StringsAreEqual(Mode, "fit")) {
         [Options setObject:[NSNumber numberWithInt:NSImageScaleProportionallyUpOrDown]
             forKey:NSWorkspaceDesktopImageScalingKey];
         [Options setObject:[NSNumber numberWithBool:NO]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
-
-    if (strcmp(Mode, "stretch") == 0)
-    {
+    else if (StringsAreEqual(Mode, "stretch")) {
         [Options setObject:[NSNumber numberWithInt:NSImageScaleAxesIndependently]
             forKey:NSWorkspaceDesktopImageScalingKey];
         [Options setObject:[NSNumber numberWithBool:YES]
             forKey:NSWorkspaceDesktopImageAllowClippingKey];
     }
-
-    if (strcmp(Mode, "center") == 0)
-    {
+    else if (StringsAreEqual(Mode, "center")) {
         [Options setObject:[NSNumber numberWithInt:NSImageScaleNone]
             forKey:NSWorkspaceDesktopImageScalingKey];
         [Options setObject:[NSNumber numberWithBool:NO]
@@ -323,44 +312,42 @@ bool ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode)
 {
     bool Success = true;
 
+    NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
     NSArray<NSScreen *> *Screens = [NSScreen screens];
 
-    for (int i = 0; i < [Screens count]; ++i)
-    {
+    for (int i = 0; i < Screens.count; ++i) {
         NSScreen *Screen = Screens[i];
-        NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
         NSMutableDictionary *Options = [[Workspace desktopImageOptionsForScreen:Screen]
-            mutableCopy];
+                                        mutableCopy];
 
         SetOptionsForMode(Options, Mode);
 
         NSError *Error;
 
-        NSString *PathToFile = [NSString
-            stringWithCString:WallpaperFile
-            encoding:[NSString defaultCStringEncoding]];
-        bool Result = [Workspace
-            setDesktopImageURL:[NSURL fileURLWithPath:PathToFile]
-            forScreen:Screen
-            options:Options
-            error:&Error];
+        NSString *PathToFile = [NSString stringWithCString:WallpaperFile
+                                                  encoding:[NSString defaultCStringEncoding]];
+        bool Result = [Workspace setDesktopImageURL:[NSURL fileURLWithPath:PathToFile]
+                                          forScreen:Screen
+                                            options:Options
+                                              error:&Error];
 
-        if (!Result)
+        if (!Result) {
             Success = false;
+        }
     }
 
     return Success;
 }
 
-int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
+bool SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
 {
-    if (access(NormalCStringPathToFile, F_OK) == -1)
-        return 1;
+    if (access(NormalCStringPathToFile, F_OK) == -1) {
+        return false;
+    }
 
     // Convert the C type to the Objective-C type.
-    NSString *PathToFile = [NSString
-        stringWithCString:NormalCStringPathToFile
-        encoding:[NSString defaultCStringEncoding]];
+    NSString *PathToFile = [NSString stringWithCString:NormalCStringPathToFile
+                                              encoding:[NSString defaultCStringEncoding]];
 
     NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
     NSScreen *Screen = [NSScreen mainScreen];
@@ -370,16 +357,12 @@ int SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
 
     NSError *Error;
 
-    bool Success = [Workspace
-        setDesktopImageURL:[NSURL fileURLWithPath:PathToFile]
-        forScreen:Screen
-        options:Options
-        error:&Error];
+    bool Success = [Workspace setDesktopImageURL:[NSURL fileURLWithPath:PathToFile]
+                                       forScreen:Screen
+                                         options:Options
+                                           error:&Error];
 
-    if (!Success)
-        return 1;
-
-    return 0;
+    return Success;
 }
 
 int NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
@@ -389,15 +372,13 @@ int NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
     std::vector<macos_application *> ApplicationList =
         AXLibRunningProcesses(Process_Policy_Regular);
 
-    for (int i = 0; i < ApplicationList.size(); ++i)
-    {
+    for (int i = 0; i < ApplicationList.size(); ++i) {
         macos_window **WindowList = AXLibWindowListForApplication(ApplicationList[i]);
         if (!WindowList)
             continue;
 
         macos_window *Window;
-        while ((Window = *WindowList++))
-        {
+        while ((Window = *WindowList++)) {
             if (AXLibSpaceHasWindow(SpaceId, Window->Id)
                 && !AXLibHasFlags(Window, Window_Minimized))
                 NumberOfWindows++;
@@ -413,22 +394,19 @@ int BlurWallpaper(const char *Input, const char *Output, double Range, double Si
     MagickWand *Wand = NewMagickWand();
 
     MagickBooleanType Status = MagickReadImage(Wand, Input);
-    if (Status == MagickFalse)
-    {
+    if (Status == MagickFalse) {
         API.Log(C_LOG_LEVEL_ERROR, "blur: could not find image,\n");
         return 1;
     }
 
     Status = MagickBlurImage(Wand, Range, Sigma);
-    if (Status == MagickFalse)
-    {
+    if (Status == MagickFalse) {
         API.Log(C_LOG_LEVEL_ERROR, "blur: could not blur image.\n");
         return 2;
     }
 
     Status = MagickWriteImage(Wand, Output);
-    if (Status == MagickFalse)
-    {
+    if (Status == MagickFalse) {
         API.Log(C_LOG_LEVEL_ERROR, "blur: could not write image.\n");
         return 3;
     }
@@ -451,8 +429,7 @@ char *GetPathToWallpaper(void)
     [FileManager fileExistsAtPath:Path isDirectory:&IsDir];
 
     // If directory, check db.
-    if (IsDir)
-    {
+    if (IsDir) {
         NSArray *Dirs = NSSearchPathForDirectoriesInDomains(
             NSApplicationSupportDirectory,
             NSUserDomainMask,
@@ -460,16 +437,13 @@ char *GetPathToWallpaper(void)
         NSString *DatabasePath = [Dirs[0] stringByAppendingPathComponent:@"Dock/desktoppicture.db"];
         sqlite3 *Database;
 
-        if (sqlite3_open(DatabasePath.UTF8String, &Database) == SQLITE_OK)
-        {
+        if (sqlite3_open(DatabasePath.UTF8String, &Database) == SQLITE_OK) {
             sqlite3_stmt *Statement;
             const char *SQL = "SELECT * FROM data";
 
-            if (sqlite3_prepare_v2(Database, SQL, -1, &Statement, nil) == SQLITE_OK)
-            {
+            if (sqlite3_prepare_v2(Database, SQL, -1, &Statement, nil) == SQLITE_OK) {
                 NSString *File;
-                while (sqlite3_step(Statement) == SQLITE_ROW)
-                {
+                while (sqlite3_step(Statement) == SQLITE_ROW) {
                     File = @((char *) sqlite3_column_text(Statement, 0));
                 }
 
@@ -484,10 +458,10 @@ char *GetPathToWallpaper(void)
             sqlite3_close(Database);
         }
     }
-    else
-    {
+    else {
         PathToFile = (char *) malloc(sizeof(char) * strlen(Path.UTF8String));
         sprintf(PathToFile, "%s", Path.UTF8String);
     }
+
     return PathToFile;
 }
