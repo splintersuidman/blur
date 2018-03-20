@@ -9,7 +9,7 @@
 - Reset wallpaper on all spaces on unload, and with `chunkc blur::reset`.
 
 ### Changed
-- Improve logging
+- Improve logging.
 
 ---
 
