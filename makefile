@@ -20,3 +20,6 @@ clean:
 
 $(BUILD_PATH)/blur.so: $(SRC) | $(BUILD_PATH)
 	clang++ $^ $(BUILD_FLAGS) -o $@ $(LINK)
+
+format:
+	clang-format -i -style=file $(SRC)
