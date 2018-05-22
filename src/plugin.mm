@@ -34,36 +34,36 @@ internal float BlurSigma = 0.0;
 internal char *TmpWallpaperPath = NULL;
 
 internal const char *HelpMessage
-    = "blur by splintah\n\
-https://github.com/splintah/blur\n\n\
-Variables. Set these in your cunkwmrc with `chunkc set <name> <value>'\n\
-  wallpaper (path):\n\
-    Path to your wallpaper.\n\
-    Default: path to your current wallpaper.\n\
-    This is the 'global' wallpaper.\n\
-  <space>_wallpaper (path):\n\
-    Path to a wallpaper.\n\
-    This wallpaper will be used on space <space>.\n\
-  wallpaper_blur (float):\n\
-    Changes the blur intensity.\n\
-    Default: 0.0 (imagemagick selects a suitable value when 0.0 is used).\n\
-  wallpaper_mode (`fill', `fit', `stretch' or `center'):\n\
-    The way a wallpaper is displayed. Default: `fill'.\n\
-  wallpaper_tmp_path (path): \n\
-    Where to store the blurred wallpaper. Default: `/tmp/'.\n\n\
-Runtime commands. Run these with `chunkc blur::<command>'\n\
-  wallpaper (path):\n\
-    Set the wallpaper path while running chunkwm.\n\
-  enable:\n\
-    Enable blurring. Blurring is enabled by default.\n\
-  disable:\n\
-    Disable blurring.\n\
-    Every desktop will get its wallpaper specified with <space>_wallpaper, but not blurred.\n\
-  reset:\n\
-    Reset wallpaper on all spaces.\n\
-    The wallpaper will be set to the wallpaper specified with `chunkc set wallpaper'.\n\
-    This also disables blurring.\n\
-";
+    = "blur by splintah\n"
+      "https://github.com/splintah/blur\n\n"
+      "Variables. Set these in your cunkwmrc with `chunkc set <name> <value>'\n"
+      "  wallpaper (path):\n"
+      "    Path to your wallpaper.\n"
+      "    Default: path to your current wallpaper.\n"
+      "    This is the 'global' wallpaper.\n"
+      "  <space>_wallpaper (path):\n"
+      "    Path to a wallpaper.\n"
+      "    This wallpaper will be used on space <space>.\n"
+      "  wallpaper_blur (float):\n"
+      "    Changes the blur intensity.\n"
+      "    Default: 0.0 (imagemagick selects a suitable value when 0.0 is used).\n"
+      "  wallpaper_mode (`fill', `fit', `stretch' or `center'):\n"
+      "    The way a wallpaper is displayed. Default: `fill'.\n"
+      "  wallpaper_tmp_path (path): \n"
+      "    Where to store the blurred wallpaper. Default: `/tmp/'.\n\n"
+      "Runtime commands. Run these with `chunkc blur::<command>'\n"
+      "  wallpaper (path):\n"
+      "    Set the wallpaper path while running chunkwm.\n"
+      "  enable:\n"
+      "    Enable blurring. Blurring is enabled by default.\n"
+      "  disable:\n"
+      "    Disable blurring.\n"
+      "    Every desktop will get its wallpaper specified with <space>_wallpaper, but not "
+      "blurred.\n"
+      "  reset:\n"
+      "    Reset wallpaper on all spaces.\n"
+      "    The wallpaper will be set to the wallpaper specified with `chunkc set wallpaper'.\n"
+      "    This also disables blurring.\n";
 
 inline bool
 StringsAreEqual(const char *A, const char *B)
