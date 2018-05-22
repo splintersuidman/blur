@@ -383,7 +383,7 @@ BlurWallpaper(const char *Input, const char *Output)
 
     MagickBooleanType Status = MagickReadImage(Wand, Input);
     if (Status == MagickFalse) {
-        API.Log(C_LOG_LEVEL_ERROR, "blur: could not find image,\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: could not find image.\n");
         return 1;
     }
 
