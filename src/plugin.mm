@@ -21,7 +21,7 @@
 bool ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode);
 bool SetWallpaper(const char *NormalCStringPathToFile, const char *Mode);
 int NumberOfWindowsOnSpace(CGSSpaceID SpaceId);
-int BlurWallpaper(const char *Input, const char *Output, double Range, double Sigma);
+int BlurWallpaper(const char *Input, const char *Output);
 char *GetPathToWallpaper(void);
 
 internal const char *PluginName = "blur";
@@ -160,10 +160,7 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
         snprintf(WallpaperFile, 128, "%s/chunkwm-blur-%d.jpg", TmpWallpaperPath, DesktopId);
 
         if (access(WallpaperFile, F_OK) == -1) {
-            BlurWallpaper(CVarStringValue(SpaceSpecificRule),
-                          WallpaperFile,
-                          (double) BlurRange,
-                          (double) BlurSigma);
+            BlurWallpaper(CVarStringValue(SpaceSpecificRule), WallpaperFile);
         }
     } else {
         if (!Blurred) {
@@ -173,10 +170,7 @@ GetWallpaperPath(unsigned DesktopId, bool Blurred)
         snprintf(WallpaperFile, 128, "%s/chunkwm-blur-global.jpg", TmpWallpaperPath);
 
         if (access(WallpaperFile, F_OK) == -1) {
-            BlurWallpaper(CVarStringValue("wallpaper"),
-                          WallpaperFile,
-                          (double) BlurRange,
-                          (double) BlurSigma);
+            BlurWallpaper(CVarStringValue("wallpaper"), WallpaperFile);
         }
     }
 
@@ -365,14 +359,16 @@ NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
 
     for (int i = 0; i < ApplicationList.size(); ++i) {
         macos_window **WindowList = AXLibWindowListForApplication(ApplicationList[i]);
-        if (!WindowList)
+        if (!WindowList) {
             continue;
+        }
 
         macos_window *Window;
         while ((Window = *WindowList++)) {
             if (AXLibSpaceHasWindow(SpaceId, Window->Id)
-                && !AXLibHasFlags(Window, Window_Minimized))
+                && !AXLibHasFlags(Window, Window_Minimized)) {
                 NumberOfWindows++;
+            }
         }
     }
 
@@ -380,7 +376,7 @@ NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
 }
 
 int
-BlurWallpaper(const char *Input, const char *Output, double Range, double Sigma)
+BlurWallpaper(const char *Input, const char *Output)
 {
     MagickWandGenesis();
     MagickWand *Wand = NewMagickWand();
@@ -391,7 +387,7 @@ BlurWallpaper(const char *Input, const char *Output, double Range, double Sigma)
         return 1;
     }
 
-    Status = MagickBlurImage(Wand, Range, Sigma);
+    Status = MagickBlurImage(Wand, (double) BlurRange, (double) BlurSigma);
     if (Status == MagickFalse) {
         API.Log(C_LOG_LEVEL_ERROR, "blur: could not blur image.\n");
         return 2;
