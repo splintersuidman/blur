@@ -4,6 +4,13 @@
 
 ---
 
+## [0.2.3]
+
+### Changed
+- Updated chunkwm ABI version for compatibility with v0.4.0 and above.
+
+---
+
 ## [0.2.2]
 ### Added
 - Reset wallpaper on all spaces on unload, and with `chunkc blur::reset`.

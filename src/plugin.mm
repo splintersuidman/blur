@@ -25,7 +25,7 @@ int BlurWallpaper(const char *Input, const char *Output);
 char *GetPathToWallpaper(void);
 
 internal const char *PluginName = "blur";
-internal const char *PluginVersion = "0.2.1";
+internal const char *PluginVersion = "0.2.3";
 internal chunkwm_api API;
 
 internal bool DoBlur = true;
