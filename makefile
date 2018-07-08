@@ -10,7 +10,7 @@ all: $(BINS)
 install: BUILD_FLAGS=-O2 -Wall
 install: clean $(BINS)
 
-.PHONY: all clean install
+.PHONY: all clean install format
 
 $(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)
