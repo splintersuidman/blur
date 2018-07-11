@@ -75,6 +75,8 @@ StringsAreEqual(const char *A, const char *B)
 internal void
 DeleteImages(void)
 {
+    API.Log(C_LOG_LEVEL_DEBUG, "blur: deleting blurred images.\n");
+
     char *DeleteCommand = (char *) malloc(
         sizeof(char) * (strlen("rm -f /chunkwm-blur*.jpg") + strlen(TmpWallpaperPath)));
 
@@ -326,6 +328,7 @@ bool
 SetWallpaper(const char *NormalCStringPathToFile, const char *Mode)
 {
     if (access(NormalCStringPathToFile, F_OK) == -1) {
+        API.Log(C_LOG_LEVEL_ERROR, "blur: cannot find image '%s'.\n", NormalCStringPathToFile);
         return false;
     }
 
@@ -378,26 +381,30 @@ NumberOfWindowsOnSpace(CGSSpaceID SpaceId)
 int
 BlurWallpaper(const char *Input, const char *Output)
 {
+    API.Log(C_LOG_LEVEL_DEBUG, "blur: blurring '%s' to '%s'.\n", Input, Output);
+
     MagickWandGenesis();
     MagickWand *Wand = NewMagickWand();
 
     MagickBooleanType Status = MagickReadImage(Wand, Input);
     if (Status == MagickFalse) {
-        API.Log(C_LOG_LEVEL_ERROR, "blur: could not find image.\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: cannot find image while blurring.\n");
         return 1;
     }
 
     Status = MagickBlurImage(Wand, (double) BlurRange, (double) BlurSigma);
     if (Status == MagickFalse) {
-        API.Log(C_LOG_LEVEL_ERROR, "blur: could not blur image.\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: cannot blur image.\n");
         return 2;
     }
 
     Status = MagickWriteImage(Wand, Output);
     if (Status == MagickFalse) {
-        API.Log(C_LOG_LEVEL_ERROR, "blur: could not write image.\n");
+        API.Log(C_LOG_LEVEL_ERROR, "blur: cannot write image while blurring.\n");
         return 3;
     }
+
+    API.Log(C_LOG_LEVEL_DEBUG, "blur: successfully blurred wallpaper.\n");
 
     return 0;
 }
