@@ -4,6 +4,13 @@
 
 ---
 
+## [0.2.4]
+
+### Changed
+- Updated chunkwm ABI version for compatibility with v0.4.6 and above.
+
+---
+
 ## [0.2.3]
 
 ### Changed

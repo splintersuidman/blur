@@ -25,7 +25,7 @@ int BlurWallpaper(const char *Input, const char *Output);
 char *GetPathToWallpaper(void);
 
 internal const char *PluginName = "blur";
-internal const char *PluginVersion = "0.2.3";
+internal const char *PluginVersion = "0.2.4";
 internal chunkwm_api API;
 
 internal bool DoBlur = true;
@@ -230,6 +230,13 @@ PLUGIN_BOOL_FUNC(PluginInit)
 
     DeleteImages();
 
+    // Blur wallpaper on startup.
+    char *WallpaperFile = (char *) malloc(128);
+    snprintf(WallpaperFile, 128, "%s/chunkwm-blur-global.jpg", TmpWallpaperPath);
+    BlurWallpaper(CVarStringValue("wallpaper"), WallpaperFile);
+
+    ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
+
     return true;
 }
 
@@ -300,6 +307,7 @@ ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode)
     NSWorkspace *Workspace = [NSWorkspace sharedWorkspace];
     NSArray<NSScreen *> *Screens = [NSScreen screens];
 
+    API.Log(C_LOG_LEVEL_DEBUG, "blur: Screens.count=%d\n", Screens.count);
     for (int i = 0; i < Screens.count; ++i) {
         NSScreen *Screen = Screens[i];
         NSMutableDictionary *Options =
@@ -315,6 +323,8 @@ ResetWallpaperOnAllSpaces(const char *WallpaperFile, const char *Mode)
                                           forScreen:Screen
                                             options:Options
                                               error:&Error];
+
+        API.Log(C_LOG_LEVEL_DEBUG, "blur: Reset wallpaper on %d: %s.\n", i, Result ? "true" : "false");
 
         if (!Result) {
             Success = false;
@@ -405,6 +415,7 @@ BlurWallpaper(const char *Input, const char *Output)
     }
 
     API.Log(C_LOG_LEVEL_DEBUG, "blur: successfully blurred wallpaper.\n");
+    // ResetWallpaperOnAllSpaces(CVarStringValue("wallpaper"), CVarStringValue("wallpaper_mode"));
 
     return 0;
 }
