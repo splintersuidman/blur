@@ -42,11 +42,11 @@ Example: `chunkc blur::wallpaper ~/Pictures/wallpaper.jpg`
 
 ## How to install
 ### With Homebrew
-Thanks to [crisidev](https://github.com/crisidev) for providing a homebrew formula.
+Thanks to [crisidev](https://github.com/crisidev) for providing a homebrew formula, and to [koekeishiya](https://github.com/koekeishiya) for adding it to their tap.
 
 ```bash
 # Clone the tap.
-brew tap crisidev/homebrew-chunkwm
+brew tap koekeishiya/formulae
 
 # Install the plugin.
 brew install chunkwm-blur --HEAD
